@@ -10,7 +10,10 @@ export default [
     ignores: ['dist'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        module: 'writable',  // Add this line to define 'module' as a global variable
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
