@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-display: swap;
+  font-family: 'Monoton';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./assets/fonts/monoton-v19-latin-regular.woff2'),
+       url('./assets/fonts/monoton-v19-latin-regular.ttf');
+}
+
+h1 {
+  font-family: 'Monoton', sans-serif;
+}
+
+h2 {
+  margin-bottom: 1rem;
+}
