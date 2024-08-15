@@ -19,9 +19,8 @@ function App() {
   const [isEditing, setIsEditing] = useState(true);
   const [offset, setOffset] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
-
-
-
+  const [isPremium, setIsPremium] = useState(false);
+  const [currentAudio, setCurrentAudio] = useState(null);
 
   const handleSearch = (searchTerm, newSearch = false) => {
     if(!searchTerm.trim()) {
@@ -79,6 +78,38 @@ function App() {
     });
   }
 
+  useEffect(() => {
+    // Check if the user is a premium user
+    const checkSubscription = async () => {
+      const subscription = await Spotify.getUserSubscriptionLevel();
+      setIsPremium(subscription === 'premium');
+    };
+
+    checkSubscription();
+  }, []);
+
+  const handlePlay = async (track) => {
+    // Stop current audio if playing
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+
+    if (isPremium) {
+      // Play full track if the user is a Premium subscriber
+      await Spotify.playTrack(track.uri);
+      setCurrentAudio(null); // Reset currentAudio since the full track is managed by Spotify
+    } else if (track.preview_url) {
+      // Play 30-second preview if the user is a Free user
+      const audio = new Audio(track.preview_url);
+      setCurrentAudio(audio);
+      audio.play();
+    } else {
+      alert('No preview available for this track.');
+    }
+  };
+
+
   return (
     <div className="flex flex-col h-screen">
       <header className="p-4 bg-blue-500 text-white text-center">
@@ -103,7 +134,12 @@ function App() {
           {query && <SearchResults query={query} />}
           {tracks.length > 0 && (
             <>
-              <Tracklist tracks={tracks} handleAddToPlaylist={handleAddToPlaylist} />
+              <Tracklist
+                tracks={tracks}
+                handleAddToPlaylist={handleAddToPlaylist}
+                Spotify={Spotify}
+                handlePlay={handlePlay}
+              />
               {offset < totalResults && (
                 <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">Load More</button>
               )}
