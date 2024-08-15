@@ -1,6 +1,5 @@
 import styles from './Playlist.module.scss'
 import PropTypes from 'prop-types'
-import { useState } from 'react';
 
 export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, playlistName, setPlaylistName, handleSaveToSpotify, isEditing, setIsEditing }) {
   const handlePlaylistnameSubmit = (e) => {
@@ -15,7 +14,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         // editmode for Playlistname
         <form onSubmit={handlePlaylistnameSubmit} className='flex gap-1 justify-center'>
         <input onChange={(e) => setPlaylistName(e.target.value)}className="rounded-tl-xl rounded-bl-xl tracking-wider placeholder-center text-center" type="text" placeholder={playlistName} />
-        <button type="submit" onClick={(e) => setIsEditing(false)} className="text-white bg-neon-pink rounded-tr-xl rounded-br-xl py-0.2 px-2">
+        <button type="submit" onClick={() => setIsEditing(false)} className="text-white bg-neon-pink rounded-tr-xl rounded-br-xl py-0.2 px-2">
         save
         </button>
         </form>
@@ -25,7 +24,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
           <div>
             <h2 className="text-white m-0 mr-2 text-2xl">{playlistName}</h2>
           </div>
-          <button onClick={(e) => setIsEditing(true)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min inline-block">
+          <button onClick={() => setIsEditing(true)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min inline-block">
             edit
           </button>
         </div>
@@ -70,6 +69,9 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
 Playlist.propTypes = {
   playlistTracks: PropTypes.array.isRequired,
   handleRemoveFromPlaylist: PropTypes.func.isRequired,
-  handlePlaylistnameSubmit: PropTypes.func.isRequired,
   playlistName: PropTypes.string.isRequired,
+  setPlaylistName: PropTypes.func.isRequired,
+  handleSaveToSpotify: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  setIsEditing: PropTypes.func.isRequired
 }
