@@ -20,6 +20,7 @@ function App() {
   const [isPremium, setIsPremium] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const {
     playlistTracks,
@@ -33,7 +34,7 @@ function App() {
   } = usePlaylist();
 
   const handleSearch = (searchTerm, newSearch = false) => {
-    if(!searchTerm.trim()) {
+    if (!searchTerm.trim()) {
       console.warn("Search term is empty. Skipping API request.");
       return;
     }
@@ -57,7 +58,7 @@ function App() {
   };
 
   const handleSuggestions = async (inputValue) => {
-    if(!inputValue) {
+    if (!inputValue) {
       setSuggestions([]);
       return;
     }
@@ -66,7 +67,6 @@ function App() {
   };
 
   useEffect(() => {
-    // Check if the user is a premium user
     const checkSubscription = async () => {
       const subscription = await Spotify.getUserSubscriptionLevel();
       setIsPremium(subscription === 'premium');
@@ -76,27 +76,40 @@ function App() {
   }, []);
 
   const handlePlay = async (track) => {
-    console.log(track);
-    // Stop current audio if playing
+    // If the same track is playing, pause it
+    if (currentAudio && isPlaying && currentAudio.src === track.preview_url) {
+      currentAudio.pause();
+      setIsPlaying(false);
+      setCurrentAudio(null);
+      return;
+    }
+
+    // Stop current audio if it exists
     if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
+      setIsPlaying(false);
     }
 
     if (isPremium) {
       // Play full track if the user is a Premium subscriber
       await Spotify.playTrack(track.uri);
       setCurrentAudio(null); // Reset currentAudio since the full track is managed by Spotify
+      setIsPlaying(true); // Assume track is playing
     } else if (track.preview_url) {
       // Play 30-second preview if the user is a Free user
       const audio = new Audio(track.preview_url);
       setCurrentAudio(audio);
+      setIsPlaying(true);
       audio.play();
+      audio.onended = () => {
+        setIsPlaying(false);
+        setCurrentAudio(null);
+      };
     } else {
       alert('No preview available for this track.');
     }
   };
-
 
   return (
     <div className="flex flex-col h-screen">
@@ -133,6 +146,8 @@ function App() {
                 handleAddToPlaylist={handleAddToPlaylist}
                 Spotify={Spotify}
                 handlePlay={handlePlay}
+                isPlaying={isPlaying}
+                currentTrack={currentAudio ? tracks.find(track => track.preview_url === currentAudio.src) : null}
               />
               {offset < totalResults && (
                 <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">Load More</button>
