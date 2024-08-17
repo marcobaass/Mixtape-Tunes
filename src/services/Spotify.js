@@ -60,6 +60,33 @@ const Spotify = {
     });
   },
 
+  async getSuggestions(query) {
+    if (!query) {
+      return [];
+    }
+
+    const accessToken = Spotify.getAccessToken();
+    const endpoint = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track,artist&limit=5`;
+
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      });
+
+      const data = await response.json();
+      const trackSuggestions = data.tracks?.items.map(track => track.name) || [];
+      const artistSuggestions = data.artists?.items.map(artist => artist.name) || [];
+
+      return [...trackSuggestions, ...artistSuggestions]
+
+    } catch (error) {
+      console.error('Error fetching suggestions', error);
+      return [];
+    }
+  },
+
   async getUserSubscriptionLevel() {
     const accessToken = Spotify.getAccessToken();
     const response = await fetch('https://api.spotify.com/v1/me', {

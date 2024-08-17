@@ -21,6 +21,7 @@ function App() {
   const [totalResults, setTotalResults] = useState(0);
   const [isPremium, setIsPremium] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
 
   const handleSearch = (searchTerm, newSearch = false) => {
     if(!searchTerm.trim()) {
@@ -78,6 +79,15 @@ function App() {
     });
   }
 
+  const handleSuggestions = async (inputValue) => {
+    if(!inputValue) {
+      setSuggestions([]);
+      return;
+    }
+    const fetchedSuggestions = await Spotify.getSuggestions(inputValue);
+    setSuggestions(fetchedSuggestions);
+  };
+
   useEffect(() => {
     // Check if the user is a premium user
     const checkSubscription = async () => {
@@ -89,6 +99,7 @@ function App() {
   }, []);
 
   const handlePlay = async (track) => {
+    console.log(track);
     // Stop current audio if playing
     if (currentAudio) {
       currentAudio.pause();
@@ -129,7 +140,13 @@ function App() {
         </aside>
         <main className="w-3/4 p-4">
           <div className="flex justify-center mb-4">
-            <SearchBar text={text} setText={setText} onSubmit={handleSubmit} />
+            <SearchBar
+              text={text}
+              setText={setText}
+              onSubmit={handleSubmit}
+              handleSuggestions={handleSuggestions}
+              suggestions={suggestions}
+            />
           </div>
           {query && <SearchResults query={query} />}
           {tracks.length > 0 && (

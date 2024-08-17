@@ -1,0 +1,10 @@
+.suggestions {
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.suggestions li {
+  list-style: none;
+  padding: 8px;
+}
