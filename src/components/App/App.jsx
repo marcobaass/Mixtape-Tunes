@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import usePlaylist from '../../hooks/usePlaylist';
 import styles from './App.module.scss';
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
@@ -14,14 +15,22 @@ function App() {
   const [text, setText] = useState("");
   const [tracks, setTracks] = useState([]);
   const [query, setQuery] = useState("");
-  const [playlistTracks, setPlaylistTracks] = useState([]);
-  const [playlistName, setPlaylistName] = useState("Your Playlist");
-  const [isEditing, setIsEditing] = useState(true);
   const [offset, setOffset] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
   const [isPremium, setIsPremium] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+
+  const {
+    playlistTracks,
+    playlistName,
+    isEditing,
+    setPlaylistName,
+    setIsEditing,
+    handleAddToPlaylist,
+    handleRemoveFromPlaylist,
+    handleSaveToSpotify,
+  } = usePlaylist();
 
   const handleSearch = (searchTerm, newSearch = false) => {
     if(!searchTerm.trim()) {
@@ -46,38 +55,6 @@ function App() {
   const handleLoadMore = () => {
     handleSearch(query);
   };
-
-  const handleAddToPlaylist = (track) => {
-    setPlaylistTracks(prevTracks => {
-      const isTrackAlreadyAdded = prevTracks.some (
-        (prevTrack) => prevTrack.name === track.name && prevTrack.artist === track.artist
-      );
-
-      if (isTrackAlreadyAdded) {
-        return prevTracks;
-      }
-
-      return [...prevTracks, track];
-    })
-  }
-
-  const handleRemoveFromPlaylist = (trackToRemove) => {
-      setPlaylistTracks(prevTracks => prevTracks.filter(track => track !== trackToRemove)
-    );
-  };
-
-  const handleSaveToSpotify = (playlistTracks) => {
-    const uriArray = playlistTracks.map(track => track.uri);
-    Spotify.savePlaylist(playlistName, uriArray)
-    .then(() => {
-      setPlaylistTracks([]);
-      setPlaylistName("Your Playlist");
-      setIsEditing(true);
-    })
-    .catch(error => {
-      console.error("Error saving playlist:", error);
-    });
-  }
 
   const handleSuggestions = async (inputValue) => {
     if(!inputValue) {
