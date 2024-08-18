@@ -21,6 +21,7 @@ function App() {
   const [currentAudio, setCurrentAudio] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [recommendedTracks, setRecommendedTracks] = useState([]);
 
   const {
     playlistTracks,
@@ -111,6 +112,12 @@ function App() {
     }
   };
 
+  const getRecommendations = async (playlistTracks) => {
+    const recommendations = await Spotify.getRecommendations(playlistTracks);
+    setTracks([]); // Clear the previous search results
+    setRecommendedTracks(recommendations); // Store the recommended tracks
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <header className="p-4 bg-blue-500 text-white text-center">
@@ -126,6 +133,7 @@ function App() {
             handleSaveToSpotify={handleSaveToSpotify}
             isEditing={isEditing}
             setIsEditing={setIsEditing}
+            getRecommendations={getRecommendations}
           />
         </aside>
         <main className="w-3/4 p-4">
@@ -142,7 +150,7 @@ function App() {
           {tracks.length > 0 && (
             <>
               <Tracklist
-                tracks={tracks}
+                tracks={recommendedTracks.length > 0 ? recommendedTracks : tracks}
                 handleAddToPlaylist={handleAddToPlaylist}
                 Spotify={Spotify}
                 handlePlay={handlePlay}

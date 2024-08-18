@@ -1,7 +1,7 @@
 import styles from './Playlist.module.scss'
 import PropTypes from 'prop-types'
 
-export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, playlistName, setPlaylistName, handleSaveToSpotify, isEditing, setIsEditing }) {
+export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, playlistName, setPlaylistName, handleSaveToSpotify, isEditing, setIsEditing, getRecommendations }) {
   const handlePlaylistnameSubmit = (e) => {
     e.preventDefault();
     setIsEditing(false);
@@ -59,6 +59,12 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
       {playlistTracks.length > 0 && !isEditing && (
         <button onClick={() => handleSaveToSpotify(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">
           Save to Spotify
+        </button>
+      )}
+
+      {playlistTracks.length > 0 && (
+        <button onClick={() => getRecommendations(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">
+          Get recommendations
         </button>
       )}
     </div>

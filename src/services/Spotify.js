@@ -212,6 +212,54 @@ const Spotify = {
     } catch (error) {
       console.error('Error playing track:', error);
     }
+  },
+
+  async getRecommendations(playlistTracks) {
+    if (!playlistTracks || playlistTracks.lenght === 0) {
+      return [];
+    }
+
+    const randomTracks = [];
+
+    const trackCount = Math.min(playlistTracks.length, 5);
+
+    while (randomTracks.length < trackCount) {
+        const rndIndex = Math.floor(Math.random() * playlistTracks.length);
+        const selectedTrack = playlistTracks[rndIndex];
+
+        if (!randomTracks.includes(selectedTrack)) {
+            randomTracks.push(selectedTrack);
+        }
+    }
+
+    const seedTracks = randomTracks.map(track => track.id).join(',');
+
+    const accessToken = Spotify.getAccessToken();
+    const endpoint = `https://api.spotify.com/v1/recommendations?seed_tracks=${seedTracks}`;
+
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      });
+
+      const data = await response.json();
+
+      return data.tracks.map(track => ({
+        id: track.id,
+        name: track.name,
+        artist: track.artist[0].name,
+        album: track.album.name,
+        uri: track.uri,
+        image: track.album.images[0]?.url,
+        preview_url: track.preview_url,
+      }));
+
+    } catch (error) {
+      console.error('Error fetching recommendations', error);
+      return [];
+    }
   }
 };
 
