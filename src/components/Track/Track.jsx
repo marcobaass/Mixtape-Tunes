@@ -1,7 +1,7 @@
 import styles from './Track.module.scss';
 import PropTypes from 'prop-types';
 
-export default function Track({ track, handleAddToPlaylist, handlePlay, isPlaying, currentTrack }) {
+export default function Track({ track, handleAddToPlaylist, handlePlay, isPlaying, currentTrack, isPremium }) {
 
   const isCurrentTrackPlaying = currentTrack && currentTrack.uri === track.uri && isPlaying;
 
@@ -19,12 +19,30 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
         <p className="text-xs text-electric-blue truncate">{track.name || 'Song Title'}</p>
         <p className="text-xs text-electric-blue truncate">{track.album || 'Album Title'}</p>
 
-        <button
-          className="ml-4 px-2 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-all"
-          onClick={() => handlePlay(track)}
-        >
-          {isCurrentTrackPlaying ? 'Stop' : 'Play'}
-        </button>
+        <div className="relative inline-block group">
+          {(track.preview_url && !isPremium) || isPremium ? (
+            <button
+              className="ml-4 px-2 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-all"
+              onClick={() => handlePlay(track)}
+            >
+              {isCurrentTrackPlaying ? 'Stop' : 'Play'}
+            </button>
+          ) : (
+            <button
+              className="ml-4 px-2 py-1 bg-gray-400 text-white rounded-full"
+            >
+              Play
+            </button>
+          )}
+
+          {!isPremium && !track.preview_url && (
+            <div className="absolute bottom-full mb-2 hidden group-hover:block">
+              <span>
+                <p className="bg-gray-800 text-white text-xs rounded py-1 px-2 shadow-lg">No preview available for free users</p>
+              </span>
+            </div>
+          )}
+        </div>
 
         <button
           onClick={() => handleAddToPlaylist(track)}
@@ -50,4 +68,5 @@ Track.propTypes = {
   handlePlay: PropTypes.func.isRequired,
   isPlaying: PropTypes.bool.isRequired,
   currentTrack: PropTypes.object, // Allow currentTrack to be null
+  isPremium: PropTypes.bool.isRequired
 };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Track from '../Track/Track';
 import styles from './Tracklist.module.scss';
 
-export default function Tracklist({ tracks, handleAddToPlaylist, Spotify, handlePlay, isPlaying, currentTrack }) {
+export default function Tracklist({ tracks, handleAddToPlaylist, Spotify, handlePlay, isPlaying, currentTrack, isPremium }) {
 
   useEffect(() => {
     console.log("Tracks in Tracklist: ", tracks);
@@ -20,6 +20,7 @@ export default function Tracklist({ tracks, handleAddToPlaylist, Spotify, handle
           handlePlay={() => handlePlay(track)}
           isPlaying={currentTrack && currentTrack.uri === track.uri && isPlaying}
           currentTrack={currentTrack}
+          isPremium={isPremium}
         />
       ))}
     </div>
@@ -47,5 +48,6 @@ Tracklist.propTypes = {
     playTrack: PropTypes.func,
   }).isRequired,
   isPlaying: PropTypes.bool.isRequired,
-  currentTrack: PropTypes.object, // currentTrack is optional
+  currentTrack: PropTypes.object,
+  isPremium: PropTypes.bool.isRequired
 };

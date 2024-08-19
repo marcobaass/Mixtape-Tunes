@@ -195,6 +195,7 @@ function App() {
                         : tracks.find(track => track.preview_url === currentAudio.src))
                     : null
                 }
+                isPremium={isPremium}
               />
               {offset < totalResults && (
                 <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">Load More</button>
