@@ -49,6 +49,7 @@ function App() {
   };
 
   const handleSubmit = (e) => {
+    setRecommendedTracks([]);
     e.preventDefault();
     setQuery(text);
     handleSearch(text, true);
@@ -113,15 +114,47 @@ function App() {
   };
 
   const getRecommendations = async (playlistTracks) => {
+    console.log("getRecommendations called with playlistTracks: ", playlistTracks);
     const recommendations = await Spotify.getRecommendations(playlistTracks);
-    setTracks([]); // Clear the previous search results
-    setRecommendedTracks(recommendations); // Store the recommended tracks
+    console.log("Recommendations received: ", recommendations);
+
+    if (recommendations && recommendations.length > 0) {
+      setTracks([]); // Clear the previous search results
+      setRecommendedTracks(recommendations);
+      setCurrentAudio(null);
+      setIsPlaying(false);
+      console.log("Recommended tracks state updated: ", recommendations);
+    } else {
+      console.log("No recommendations found or something went wrong.");
+    }
   };
+
+  const handleLogout = () => {
+    console.log("Log out button clicked");
+    Spotify.getLogOut();
+
+    setTracks([]);
+    setQuery("");
+    setOffset(0);
+    setTotalResults(0);
+    setIsPremium(false);
+    setCurrentAudio(null);
+    setSuggestions([]);
+    setIsPlaying(false);
+    setRecommendedTracks([]);
+  }
 
   return (
     <div className="flex flex-col h-screen">
       <header className="p-4 bg-blue-500 text-white text-center">
         <h1 className="text-6xl">WALKIFY</h1>
+        <button onClick={() => {
+          console.log("Button clicked!");
+          alert("Log Out button clicked!");
+          handleLogout();
+        }}>
+  Log Out
+</button>
       </header>
       <div className="flex flex-1">
         <aside className="w-1/4 p-4 border-r border-gray-300">
@@ -147,7 +180,7 @@ function App() {
             />
           </div>
           {query && <SearchResults query={query} />}
-          {tracks.length > 0 && (
+          {(recommendedTracks.length > 0 || tracks.length > 0) && (
             <>
               <Tracklist
                 tracks={recommendedTracks.length > 0 ? recommendedTracks : tracks}
@@ -155,7 +188,13 @@ function App() {
                 Spotify={Spotify}
                 handlePlay={handlePlay}
                 isPlaying={isPlaying}
-                currentTrack={currentAudio ? tracks.find(track => track.preview_url === currentAudio.src) : null}
+                currentTrack={
+                  currentAudio
+                    ? (recommendedTracks.length > 0
+                        ? recommendedTracks.find(track => track.preview_url === currentAudio.src)
+                        : tracks.find(track => track.preview_url === currentAudio.src))
+                    : null
+                }
               />
               {offset < totalResults && (
                 <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">Load More</button>

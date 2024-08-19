@@ -27,6 +27,15 @@ const Spotify = {
     }
   },
 
+  getLogOut() {
+    console.log("Logging out, accessToken is being cleared.");
+    accessToken=null;
+    window.localStorage.removeItem('spotify_access_token');
+    window.sessionStorage.removeItem('spotify_access_token');
+    window.location.href ='/';
+    window.location.reload();
+  },
+
   search(term, offset = 0, limit = 50) {
     const accessToken = Spotify.getAccessToken();
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=${limit}&offset=${offset}`;
@@ -215,7 +224,7 @@ const Spotify = {
   },
 
   async getRecommendations(playlistTracks) {
-    if (!playlistTracks || playlistTracks.lenght === 0) {
+    if (!playlistTracks || playlistTracks.length === 0) {
       return [];
     }
 
@@ -236,6 +245,7 @@ const Spotify = {
 
     const accessToken = Spotify.getAccessToken();
     const endpoint = `https://api.spotify.com/v1/recommendations?seed_tracks=${seedTracks}`;
+    console.log("URL: " + endpoint);
 
     try {
       const response = await fetch(endpoint, {
@@ -245,11 +255,13 @@ const Spotify = {
       });
 
       const data = await response.json();
+      console.log("Data: " + data);
+
 
       return data.tracks.map(track => ({
         id: track.id,
         name: track.name,
-        artist: track.artist[0].name,
+        artist: track.artists[0].name,
         album: track.album.name,
         uri: track.uri,
         image: track.album.images[0]?.url,

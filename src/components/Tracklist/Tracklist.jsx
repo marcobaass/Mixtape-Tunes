@@ -1,8 +1,14 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Track from '../Track/Track';
 import styles from './Tracklist.module.scss';
 
 export default function Tracklist({ tracks, handleAddToPlaylist, Spotify, handlePlay, isPlaying, currentTrack }) {
+
+  useEffect(() => {
+    console.log("Tracks in Tracklist: ", tracks);
+  }, [tracks]);
+
   return (
     <div className={`${styles.tracklistContainer} bg-black p-8 rounded-lg shadow-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center border-4 border-neon-purple`}>
       {tracks.map((track) => (
