@@ -27,13 +27,25 @@ const Spotify = {
     }
   },
 
-  getLogOut() {
-    console.log("Logging out, accessToken is being cleared.");
-    accessToken=null;
-    window.localStorage.removeItem('spotify_access_token');
-    window.sessionStorage.removeItem('spotify_access_token');
-    window.location.href ='/';
-    window.location.reload();
+  logout() {
+    // Open a popup window to the Spotify logout URL
+    const logoutUrl = 'https://www.spotify.com/logout/';
+    const popup = window.open(logoutUrl, 'Spotify Logout', 'width=700,height=500,top=40,left=40');
+
+    // Wait for a short period to ensure the popup has enough time to complete the logout
+    setTimeout(() => {
+      // Clear local and session storage
+      window.localStorage.removeItem('spotify_access_token');
+      window.sessionStorage.removeItem('spotify_access_token');
+
+      // Redirect to home or login page
+      window.location.href = '/';
+
+      // Close the popup if it is still open
+      if (popup) {
+        popup.close();
+      }
+    }, 2000); // Adjust the delay if necessary
   },
 
   search(term, offset = 0, limit = 50) {

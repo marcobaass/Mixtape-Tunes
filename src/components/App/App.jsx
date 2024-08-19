@@ -131,8 +131,9 @@ function App() {
 
   const handleLogout = () => {
     console.log("Log out button clicked");
-    Spotify.getLogOut();
+    Spotify.logout();
 
+    // Clear any other application state or UI updates
     setTracks([]);
     setQuery("");
     setOffset(0);
@@ -142,7 +143,7 @@ function App() {
     setSuggestions([]);
     setIsPlaying(false);
     setRecommendedTracks([]);
-  }
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -150,11 +151,10 @@ function App() {
         <h1 className="text-6xl">WALKIFY</h1>
         <button onClick={() => {
           console.log("Button clicked!");
-          alert("Log Out button clicked!");
           handleLogout();
         }}>
-  Log Out
-</button>
+          Log Out
+        </button>
       </header>
       <div className="flex flex-1">
         <aside className="w-1/4 p-4 border-r border-gray-300">
