@@ -59,6 +59,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSuggestions([]);
     setRecommendedTracks([]);
     setQuery(text);
     handleSearch(text, true);
