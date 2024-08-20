@@ -2,4 +2,46 @@
   background-image: url('src/assets/imgs/tape_blank.png');
   background-size: cover;
   aspect-ratio: 1374 / 853;
+  display: grid;
+  grid-template-rows: 6% 7.5% 7.5% 2.5% 45%;
+  grid-template-columns: 4.5% 16.5% 58% 16.5%;
+  grid-template-areas: ". . . ."
+                       ". img artist ."
+                       ". img song ."
+                       ". img . ."
+                       ". play album add";
+
+}
+
+.gridImg {
+  grid-area: img;
+}
+
+.gridArtist {
+  grid-area: artist;
+  justify-self: center;
+  align-self: center;
+}
+
+.gridSong {
+  grid-area: song;
+  justify-self: center;
+  align-self: center;
+}
+
+.gridPlay {
+  grid-area: play;
+  justify-self: center;
+  align-self: center;
+}
+
+.gridAlbum {
+  grid-area: album;
+  justify-self: center;
+}
+
+.gridAdd {
+  grid-area: add;
+  justify-self: center;
+  align-self: center;
 }

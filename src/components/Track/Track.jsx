@@ -6,52 +6,58 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
   const isCurrentTrackPlaying = currentTrack && currentTrack.uri === track.uri && isPlaying;
 
   return (
-    <div className={`${styles.tape} p-4 m-1 rounded-lg shadow-lg flex items-start space-x-4 max-w-sm`}>
-      <div className="flex-shrink-0">
-        <img
-          className="w-24 h-24 object-cover border-4 border-neon-pink rounded-lg"
-          src={track.image || "default-image-url.jpg"} // Use a meaningful default image URL
-          alt={track.name || 'Track Image'}
-        />
+    <div className={`${styles.tape} m-1 rounded-lg shadow-lg max-w-sm`}>
+
+      <img
+        className={`${styles.gridImg} object-cover rounded-xl p-2`}
+        src={track.image || "default-image-url.jpg"} // Use a meaningful default image URL
+        alt={track.name || 'Track Image'}
+      />
+
+
+      <h2 className={`${styles.gridArtist} font-bold text-black`}>{track.artist || 'Artist Name'}</h2>
+      <h2 className={`${styles.gridSong} text-black`}>{track.name || 'Song Title'}</h2>
+      <h2 className={`${styles.gridAlbum} text-white`}>{track.album || 'Album Title'}</h2>
+
+
+      {/* Playbutton */}
+      <div className={`${styles.gridPlay} relative`}>
+        {(track.preview_url && !isPremium) || isPremium ? (
+          <button
+            className="mt-2 px-2 py-1 bg-lime-green text-black font-semibold rounded-lg shadow-lg hover:bg-vivid-yellow transition-colors duration-300 text-xs"
+            onClick={() => handlePlay(track)}
+          >
+            {isCurrentTrackPlaying ? 'Stop' : 'Play'}
+          </button>
+        ) : (
+          <button
+            className="px-3 py-0.5 bg-gray-400 text-white rounded-full"
+          >
+            Play
+          </button>
+        )}
+
+        {/* Tooltip */}
+        {!isPremium && !track.preview_url && (
+          <div className="absolute bottom-full mb-2 hidden group-hover:block">
+            <span>
+              <p className="bg-gray-800 text-white text-xs rounded py-1 px-2 shadow-lg">No preview available for free users</p>
+            </span>
+          </div>
+        )}
       </div>
-      <div className="flex-1">
-        <p className="text-sm font-bold text-bright-cyan truncate">{track.artist || 'Artist Name'}</p>
-        <p className="text-xs text-electric-blue truncate">{track.name || 'Song Title'}</p>
-        <p className="text-xs text-electric-blue truncate">{track.album || 'Album Title'}</p>
 
-        <div className="relative inline-block group">
-          {(track.preview_url && !isPremium) || isPremium ? (
-            <button
-              className="ml-4 px-2 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-all"
-              onClick={() => handlePlay(track)}
-            >
-              {isCurrentTrackPlaying ? 'Stop' : 'Play'}
-            </button>
-          ) : (
-            <button
-              className="ml-4 px-2 py-1 bg-gray-400 text-white rounded-full"
-            >
-              Play
-            </button>
-          )}
 
-          {!isPremium && !track.preview_url && (
-            <div className="absolute bottom-full mb-2 hidden group-hover:block">
-              <span>
-                <p className="bg-gray-800 text-white text-xs rounded py-1 px-2 shadow-lg">No preview available for free users</p>
-              </span>
-            </div>
-          )}
-        </div>
 
+        {/* Add Button */}
         <button
           onClick={() => handleAddToPlaylist(track)}
-          className="mt-2 px-2 py-1 bg-lime-green text-black font-semibold rounded-lg hover:bg-vivid-yellow transition-colors duration-300 text-xs"
+          className={`${styles.gridAdd} px-2 py-1 bg-lime-green text-black font-semibold rounded-lg hover:bg-vivid-yellow transition-colors duration-300 text-xs`}
         >
           Add
         </button>
-      </div>
     </div>
+
   );
 }
 

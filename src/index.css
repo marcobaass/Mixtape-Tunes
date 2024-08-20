@@ -11,10 +11,20 @@
        url('./assets/fonts/monoton-v19-latin-regular.ttf');
 }
 
+@font-face {
+  font-display: swap;
+  font-family: 'Gloria Hallelujah';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./assets/fonts/gloria-hallelujah-v21-latin-regular.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+       url('./assets/fonts/gloria-hallelujah-v21-latin-regular.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+}
+
 h1 {
   font-family: 'Monoton', sans-serif;
 }
 
 h2 {
-  margin-bottom: 1rem;
+  font-family: 'Gloria Hallelujah';
+  font-size: 0.75rem;
 }
