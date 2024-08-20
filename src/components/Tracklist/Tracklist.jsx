@@ -11,18 +11,22 @@ export default function Tracklist({ tracks, handleAddToPlaylist, Spotify, handle
 
   return (
     <div className={`${styles.tracklistContainer} bg-black p-8 rounded-lg shadow-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center border-4 border-neon-purple`}>
-      {tracks.map((track) => (
-        <Track
-          key={track.uri} // Using `track.uri` as a unique key
-          track={track}
-          handleAddToPlaylist={handleAddToPlaylist}
-          Spotify={Spotify}
-          handlePlay={() => handlePlay(track)}
-          isPlaying={currentTrack && currentTrack.uri === track.uri && isPlaying}
-          currentTrack={currentTrack}
-          isPremium={isPremium}
-        />
-      ))}
+      {tracks.length === 0 ? (
+        <p>No tracks available.</p>
+      ) : (
+        tracks.map((track) => (
+          <Track
+            key={track.uri} // Ensure URI is unique for each track
+            track={track}
+            handleAddToPlaylist={handleAddToPlaylist}
+            Spotify={Spotify}
+            handlePlay={() => handlePlay(track)}
+            isPlaying={currentTrack && currentTrack.uri === track.uri && isPlaying}
+            currentTrack={currentTrack}
+            isPremium={isPremium}
+          />
+        ))
+      )}
     </div>
   );
 }

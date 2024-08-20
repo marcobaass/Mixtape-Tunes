@@ -235,42 +235,38 @@ const Spotify = {
     }
   },
 
-  async getRecommendations(playlistTracks) {
+  async getRecommendations(playlistTracks, offset = 0, limit = 20) {
     if (!playlistTracks || playlistTracks.length === 0) {
-      return [];
+      return { tracks: [], total: 0 };
     }
 
     const randomTracks = [];
-
     const trackCount = Math.min(playlistTracks.length, 5);
 
     while (randomTracks.length < trackCount) {
-        const rndIndex = Math.floor(Math.random() * playlistTracks.length);
-        const selectedTrack = playlistTracks[rndIndex];
+      const rndIndex = Math.floor(Math.random() * playlistTracks.length);
+      const selectedTrack = playlistTracks[rndIndex];
 
-        if (!randomTracks.includes(selectedTrack)) {
-            randomTracks.push(selectedTrack);
-        }
+      if (!randomTracks.includes(selectedTrack)) {
+        randomTracks.push(selectedTrack);
+      }
     }
 
     const seedTracks = randomTracks.map(track => track.id).join(',');
-
     const accessToken = Spotify.getAccessToken();
-    const endpoint = `https://api.spotify.com/v1/recommendations?seed_tracks=${seedTracks}`;
-    console.log("URL: " + endpoint);
+    const endpoint = `https://api.spotify.com/v1/recommendations?seed_tracks=${seedTracks}&limit=${limit}&offset=${offset}`;
 
     try {
       const response = await fetch(endpoint, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-        }
+        },
       });
 
       const data = await response.json();
-      console.log("Data: " + data);
+      console.log("Fetched Data: ", data);
 
-
-      return data.tracks.map(track => ({
+      const newTracks = data.tracks.map(track => ({
         id: track.id,
         name: track.name,
         artist: track.artists[0].name,
@@ -280,9 +276,14 @@ const Spotify = {
         preview_url: track.preview_url,
       }));
 
+      return {
+        tracks: newTracks,
+        total: offset + newTracks.length < limit ? offset + newTracks.length : offset + newTracks.length + limit,
+        nextOffset: offset + newTracks.length
+      };
     } catch (error) {
-      console.error('Error fetching recommendations', error);
-      return [];
+      console.error('Error fetching recommendations:', error);
+      return { tracks: [], total: 0 };
     }
   }
 };

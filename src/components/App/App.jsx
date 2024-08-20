@@ -15,13 +15,22 @@ function App() {
   const [text, setText] = useState("");
   const [tracks, setTracks] = useState([]);
   const [query, setQuery] = useState("");
-  const [offset, setOffset] = useState(0);
+  const [searchOffset, setSearchOffset] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
   const [isPremium, setIsPremium] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [recommendedTracks, setRecommendedTracks] = useState([]);
+  const [recommendationOffset, setRecommendationOffset] = useState(0);
+  const [totalRecommendations, setTotalRecommendations] = useState(0);
+
+  useEffect(() => {
+    console.log('Recommendation Offset:', recommendationOffset);
+    console.log('Total Recommendations:', totalRecommendations);
+    console.log('Search Offset:', searchOffset);
+    console.log('Total Results:', totalResults);
+  }, [recommendationOffset, totalRecommendations, searchOffset, totalResults]);
 
   const {
     playlistTracks,
@@ -40,23 +49,34 @@ function App() {
       return;
     }
 
-    const searchOffset = newSearch ? 0 : offset;
-    Spotify.search(searchTerm, searchOffset).then(({ tracks, total, nextOffset }) => {
+    const offset = newSearch ? 0 : searchOffset;
+    Spotify.search(searchTerm, offset).then(({ tracks, total, nextOffset }) => {
       setTracks((prevTracks) => newSearch ? tracks : [...prevTracks, ...tracks]);
-      setOffset(nextOffset);
+      setSearchOffset(nextOffset);
       setTotalResults(total);
     });
   };
 
   const handleSubmit = (e) => {
-    setRecommendedTracks([]);
     e.preventDefault();
+    setRecommendedTracks([]);
     setQuery(text);
     handleSearch(text, true);
   };
 
-  const handleLoadMore = () => {
-    handleSearch(query);
+  const handleLoadMore = async () => {
+    if (recommendedTracks.length > 0) {
+      // Load more recommendations and append to the existing list
+      const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks, recommendationOffset);
+
+      // Append new tracks to the existing list of recommended tracks
+      setRecommendedTracks((prevTracks) => [...prevTracks, ...tracks]);
+      setRecommendationOffset(nextOffset);
+      setTotalRecommendations(total);
+    } else {
+      // Load more search results
+      handleSearch(query);
+    }
   };
 
   const handleSuggestions = async (inputValue) => {
@@ -114,16 +134,16 @@ function App() {
   };
 
   const getRecommendations = async (playlistTracks) => {
-    console.log("getRecommendations called with playlistTracks: ", playlistTracks);
-    const recommendations = await Spotify.getRecommendations(playlistTracks);
-    console.log("Recommendations received: ", recommendations);
+    setRecommendationOffset(0); // Reset offset when fetching recommendations
+    const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks);
 
-    if (recommendations && recommendations.length > 0) {
+    if (tracks && tracks.length > 0) {
       setTracks([]); // Clear the previous search results
-      setRecommendedTracks(recommendations);
+      setRecommendedTracks(tracks);
+      setRecommendationOffset(nextOffset);
+      setTotalRecommendations(total);
       setCurrentAudio(null);
       setIsPlaying(false);
-      console.log("Recommended tracks state updated: ", recommendations);
     } else {
       console.log("No recommendations found or something went wrong.");
     }
@@ -136,7 +156,7 @@ function App() {
     // Clear any other application state or UI updates
     setTracks([]);
     setQuery("");
-    setOffset(0);
+    setSearchOffset(0);
     setTotalResults(0);
     setIsPremium(false);
     setCurrentAudio(null);
@@ -149,10 +169,7 @@ function App() {
     <div className="flex flex-col h-screen">
       <header className="p-4 bg-blue-500 text-white text-center">
         <h1 className="text-6xl">WALKIFY</h1>
-        <button onClick={() => {
-          console.log("Button clicked!");
-          handleLogout();
-        }}>
+        <button onClick={handleLogout}>
           Log Out
         </button>
       </header>
@@ -197,7 +214,8 @@ function App() {
                 }
                 isPremium={isPremium}
               />
-              {offset < totalResults && (
+              {((recommendedTracks.length > 0 && recommendationOffset < totalRecommendations) ||
+                (tracks.length > 0 && searchOffset < totalResults)) && (
                 <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">Load More</button>
               )}
             </>
