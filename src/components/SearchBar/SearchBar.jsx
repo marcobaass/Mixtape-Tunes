@@ -17,6 +17,7 @@ export default function SearchBar({text, setText, onSubmit, handleSuggestions, s
 
   return (
     <div className="relative">
+      <img className={styles.walkman} src="src/assets/imgs/walkman_blank_2.png" alt="illustration of a walkman"/>
       <form onSubmit={onSubmit} className="flex items-center space-x-2 p-2 bg-gray-100 rounded-full shadow-md max-w-md grow">
         <input
           type="text"

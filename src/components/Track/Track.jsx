@@ -6,7 +6,7 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
   const isCurrentTrackPlaying = currentTrack && currentTrack.uri === track.uri && isPlaying;
 
   return (
-    <div className="bg-neon-purple p-4 m-1 rounded-lg shadow-lg flex items-start space-x-4 max-w-sm">
+    <div className={`${styles.tape} p-4 m-1 rounded-lg shadow-lg flex items-start space-x-4 max-w-sm`}>
       <div className="flex-shrink-0">
         <img
           className="w-24 h-24 object-cover border-4 border-neon-pink rounded-lg"

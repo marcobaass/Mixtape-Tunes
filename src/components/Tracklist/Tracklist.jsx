@@ -10,7 +10,7 @@ export default function Tracklist({ tracks, handleAddToPlaylist, Spotify, handle
   }, [tracks]);
 
   return (
-    <div className={`${styles.tracklistContainer} bg-black p-8 rounded-lg shadow-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center border-4 border-neon-purple`}>
+    <div className={`${styles.tracklistContainer} bg-neon-purple rounded-lg shadow-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center border-4 border-neon-purple`}>
       {tracks.length === 0 ? (
         <p>No tracks available.</p>
       ) : (
