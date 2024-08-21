@@ -170,27 +170,15 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <header className="p-4 bg-blue-500 text-white text-center">
+    <div className="screen flex flex-col h-screen overflow-hidden">
+      <header className="p-4 bg-hot-magenta text-white text-center">
         <h1 className="text-6xl">WALKIFY</h1>
-        <button onClick={handleLogout} className="rounded-full bg-neon-pink px-4 py-1 mt-6 hover:bg-neon-purple transition-colors duration-300 text-base font-bold" >
+        <button onClick={handleLogout} className="rounded-full bg-neon-green px-4 py-1 mt-6 hover:bg-lime-green transition-colors duration-300 text-base font-bold">
           Log Out
         </button>
       </header>
-      <div className="flex flex-1">
-        <aside className="w-1/3 p-4 border-r border-gray-300">
-          <Playlist
-            playlistTracks={playlistTracks}
-            handleRemoveFromPlaylist={handleRemoveFromPlaylist}
-            playlistName={playlistName}
-            setPlaylistName={setPlaylistName}
-            handleSaveToSpotify={handleSaveToSpotify}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            getRecommendations={getRecommendations}
-          />
-        </aside>
-        <main className="w-3/4 p-4">
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="w-1/3 p-4 border-r border-gray-300 flex flex-col bg-electric-blue">
           <div className="flex justify-center mb-4">
             <SearchBar
               text={text}
@@ -200,30 +188,48 @@ function App() {
               suggestions={suggestions}
             />
           </div>
+          <div className="flex-1 overflow-y-auto">
+            <Playlist
+              playlistTracks={playlistTracks}
+              handleRemoveFromPlaylist={handleRemoveFromPlaylist}
+              playlistName={playlistName}
+              setPlaylistName={setPlaylistName}
+              handleSaveToSpotify={handleSaveToSpotify}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              getRecommendations={getRecommendations}
+            />
+          </div>
+        </aside>
+        <main className="w-2/3 p-4 flex flex-col bg-vivid-yellow">
           {query && <SearchResults query={query} />}
-          {(recommendedTracks.length > 0 || tracks.length > 0) && (
-            <>
-              <Tracklist
-                tracks={recommendedTracks.length > 0 ? recommendedTracks : tracks}
-                handleAddToPlaylist={handleAddToPlaylist}
-                Spotify={Spotify}
-                handlePlay={handlePlay}
-                isPlaying={isPlaying}
-                currentTrack={
-                  currentAudio
-                    ? (recommendedTracks.length > 0
-                        ? recommendedTracks.find(track => track.preview_url === currentAudio.src)
-                        : tracks.find(track => track.preview_url === currentAudio.src))
-                    : null
-                }
-                isPremium={isPremium}
-              />
-              {((recommendedTracks.length > 0 && recommendationOffset < totalRecommendations) ||
-                (tracks.length > 0 && searchOffset < totalResults)) && (
-                <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">Load More</button>
-              )}
-            </>
-          )}
+          <div className="flex-1 overflow-y-auto ">
+            {(recommendedTracks.length > 0 || tracks.length > 0) && (
+              <>
+                <Tracklist
+                  tracks={recommendedTracks.length > 0 ? recommendedTracks : tracks}
+                  handleAddToPlaylist={handleAddToPlaylist}
+                  Spotify={Spotify}
+                  handlePlay={handlePlay}
+                  isPlaying={isPlaying}
+                  currentTrack={
+                    currentAudio
+                      ? (recommendedTracks.length > 0
+                          ? recommendedTracks.find(track => track.preview_url === currentAudio.src)
+                          : tracks.find(track => track.preview_url === currentAudio.src))
+                      : null
+                  }
+                  isPremium={isPremium}
+                />
+                {((recommendedTracks.length > 0 && recommendationOffset < totalRecommendations) ||
+                  (tracks.length > 0 && searchOffset < totalResults)) && (
+                  <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
+                    Load More
+                  </button>
+                )}
+              </>
+            )}
+          </div>
         </main>
       </div>
     </div>
