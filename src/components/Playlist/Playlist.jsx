@@ -14,7 +14,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         // editmode for Playlistname
         <form onSubmit={handlePlaylistnameSubmit} className='flex gap-1 justify-center'>
         <input onChange={(e) => setPlaylistName(e.target.value)}className="rounded-tl-xl rounded-bl-xl tracking-wider placeholder-center text-center" type="text" placeholder={playlistName} />
-        <button type="submit" onClick={() => setIsEditing(false)} className="text-white bg-neon-pink rounded-tr-xl rounded-br-xl py-0.2 px-2">
+        <button type="submit" onClick={() => setIsEditing(false)} className="text-white bg-neon-pink rounded-tr-xl rounded-br-xl py-0.2 px-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
         save
         </button>
         </form>
@@ -24,7 +24,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
           <div>
             <h2 className="text-white m-0 mr-2 text-2xl">{playlistName}</h2>
           </div>
-          <button onClick={() => setIsEditing(true)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min inline-block">
+          <button onClick={() => setIsEditing(true)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min inline-block hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
             edit
           </button>
         </div>
@@ -48,7 +48,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
             </div>
             <button
               className="mb-1 mr-2 px-2 py-0 align-middle
-               bg-neon-pink text-white rounded-lg font-bold hover:bg-neon-blue transition-all"
+               bg-neon-pink text-white rounded-lg font-bold hover:bg-neon-purple transition-colors duration-300 text-base"
               onClick={() => handleRemoveFromPlaylist(track)}
             >
               X
@@ -57,13 +57,13 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         ))}
       </div>
       {playlistTracks.length > 0 && !isEditing && (
-        <button onClick={() => handleSaveToSpotify(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">
+        <button onClick={() => handleSaveToSpotify(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
           Save to Spotify
         </button>
       )}
 
       {playlistTracks.length > 0 && (
-        <button onClick={() => getRecommendations(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">
+        <button onClick={() => getRecommendations(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
           Get recommendations
         </button>
       )}

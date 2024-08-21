@@ -173,7 +173,7 @@ function App() {
     <div className="flex flex-col h-screen">
       <header className="p-4 bg-blue-500 text-white text-center">
         <h1 className="text-6xl">WALKIFY</h1>
-        <button onClick={handleLogout}>
+        <button onClick={handleLogout} className="rounded-full bg-neon-pink px-4 py-1 mt-6 hover:bg-neon-purple transition-colors duration-300 text-base font-bold" >
           Log Out
         </button>
       </header>
@@ -220,7 +220,7 @@ function App() {
               />
               {((recommendedTracks.length > 0 && recommendationOffset < totalRecommendations) ||
                 (tracks.length > 0 && searchOffset < totalResults)) && (
-                <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2">Load More</button>
+                <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">Load More</button>
               )}
             </>
           )}

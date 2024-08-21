@@ -1,25 +1,28 @@
+import { useMemo } from 'react';
 import styles from './Track.module.scss';
 import PropTypes from 'prop-types';
 
 export default function Track({ track, handleAddToPlaylist, handlePlay, isPlaying, currentTrack, isPremium }) {
 
   const isCurrentTrackPlaying = currentTrack && currentTrack.uri === track.uri && isPlaying;
-  const bgImages = [
-    't-bright-cyan',
-    't-bright-orange',
-    't-electric-blue',
-    't-hot-magenta',
-    't-neon-pink',
-    't-neon-purple',
-    't-neon-red'
-  ];
+  const tapeStyle = useMemo(() => {
+    const bgImages = [
+      't-bright-cyan',
+      't-bright-orange',
+      't-electric-blue',
+      't-hot-magenta',
+      't-neon-pink',
+      't-neon-purple',
+      't-neon-red'
+    ];
 
-  const rndIndex = Math.floor(Math.random() * bgImages.length);
-  const rndBgImg = bgImages[rndIndex];
+    const rndIndex = Math.floor(Math.random() * bgImages.length);
+    const rndBgImg = bgImages[rndIndex];
 
-  const tapeStyle = {
-    backgroundImage: `url('src/assets/imgs/${rndBgImg}.png')`,
-  };
+    return {
+      backgroundImage: `url('src/assets/imgs/${rndBgImg}.png')`,
+    };
+  }, [])
 
   return (
     <div className={`${styles.tape} m-1 rounded-lg shadow-lg max-w-sm min-w-64`} style={tapeStyle}>
