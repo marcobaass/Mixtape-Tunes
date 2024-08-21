@@ -139,6 +139,9 @@ function App() {
     const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks);
 
     if (tracks && tracks.length > 0) {
+      if (currentAudio) {
+        currentAudio.pause();
+      }
       setTracks([]); // Clear the previous search results
       setRecommendedTracks(tracks);
       setRecommendationOffset(nextOffset);
@@ -175,7 +178,7 @@ function App() {
         </button>
       </header>
       <div className="flex flex-1">
-        <aside className="w-1/4 p-4 border-r border-gray-300">
+        <aside className="w-1/3 p-4 border-r border-gray-300">
           <Playlist
             playlistTracks={playlistTracks}
             handleRemoveFromPlaylist={handleRemoveFromPlaylist}

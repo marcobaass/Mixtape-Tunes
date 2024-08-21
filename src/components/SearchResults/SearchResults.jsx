@@ -1,11 +1,10 @@
 import styles from './SearchResults.module.scss'
 import PropTypes from 'prop-types';
 
-export default function SearchResults({query}) {
+export default function SearchResults() {
   return(
     <div className={styles.resultBox}>
-      <h2>Search results for: </h2>
-      {query}
+      <h2></h2>
     </div>
   )
 }

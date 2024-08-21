@@ -48,7 +48,7 @@ const Spotify = {
     }, 2000); // Adjust the delay if necessary
   },
 
-  search(term, offset = 0, limit = 50) {
+  search(term, offset = 0, limit = 20) {
     const accessToken = Spotify.getAccessToken();
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=${limit}&offset=${offset}`;
 

@@ -4,9 +4,25 @@ import PropTypes from 'prop-types';
 export default function Track({ track, handleAddToPlaylist, handlePlay, isPlaying, currentTrack, isPremium }) {
 
   const isCurrentTrackPlaying = currentTrack && currentTrack.uri === track.uri && isPlaying;
+  const bgImages = [
+    't-bright-cyan',
+    't-bright-orange',
+    't-electric-blue',
+    't-hot-magenta',
+    't-neon-pink',
+    't-neon-purple',
+    't-neon-red'
+  ];
+
+  const rndIndex = Math.floor(Math.random() * bgImages.length);
+  const rndBgImg = bgImages[rndIndex];
+
+  const tapeStyle = {
+    backgroundImage: `url('src/assets/imgs/${rndBgImg}.png')`,
+  };
 
   return (
-    <div className={`${styles.tape} m-1 rounded-lg shadow-lg max-w-sm`}>
+    <div className={`${styles.tape} m-1 rounded-lg shadow-lg max-w-sm min-w-64`} style={tapeStyle}>
 
       <img
         className={`${styles.gridImg} object-cover rounded-xl p-2`}
@@ -21,17 +37,17 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
 
 
       {/* Playbutton */}
-      <div className={`${styles.gridPlay} relative`}>
+      <div className={`${styles.gridPlay} relative  group`}>
         {(track.preview_url && !isPremium) || isPremium ? (
           <button
-            className="mt-2 px-2 py-1 bg-lime-green text-black font-semibold rounded-lg shadow-lg hover:bg-vivid-yellow transition-colors duration-300 text-xs"
+            className="px-2 py-1 bg-lime-green text-black font-semibold rounded-lg shadow-lg hover:bg-vivid-yellow transition-colors duration-300 text-xs"
             onClick={() => handlePlay(track)}
           >
             {isCurrentTrackPlaying ? 'Stop' : 'Play'}
           </button>
         ) : (
           <button
-            className="px-3 py-0.5 bg-gray-400 text-white rounded-full"
+            className="px-2 py-1 bg-gray-400 text-white font-semibold rounded-lg shadow-lg text-xs"
           >
             Play
           </button>
@@ -41,7 +57,7 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
         {!isPremium && !track.preview_url && (
           <div className="absolute bottom-full mb-2 hidden group-hover:block">
             <span>
-              <p className="bg-gray-800 text-white text-xs rounded py-1 px-2 shadow-lg">No preview available for free users</p>
+              <p className="bg-gray-800 text-white text-sm rounded-lg py-1 px-4 shadow-lg whitespace-nowrap">No preview available for free users</p>
             </span>
           </div>
         )}

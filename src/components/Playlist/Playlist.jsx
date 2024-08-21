@@ -8,7 +8,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
   }
 
   return (
-    <div className="bg-black p-8 rounded-lg shadow-xl border-4 border-neon-purple max-w-md mx-auto">
+    <div className="bg-black p-8 rounded-lg shadow-xl border-4 border-neon-purple max-w-md mx-auto space-y-2">
 
       {isEditing ? (
         // editmode for Playlistname
@@ -31,24 +31,24 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         )
       }
 
-      <div className="space-y-4">
+      <div className="-space-y-1">
         {playlistTracks.map((track, index) => (
           <div
             key={index}
-            className="flex items-center bg-black p-2 rounded-lg shadow-md border-2 border-neon-blue text-white"
+            className={`${styles.playlist} flex items-center p-1 rounded-lg shadow-md text-white`}
           >
             <img
-              className="w-12 h-12 rounded-md"
+              className="w-8 h-8 rounded-md mb-1 ml-1"
               src={track.image || "#"}
               alt={track.name || 'Track Image'}
             />
-            <div className="ml-4 flex-1">
-              <p className="text-neon-pink font-bold">{track.artist || 'Artist Name'}</p>
-              <p className="text-neon-green">{track.name || 'Song Title'}</p>
-              <p className="text-neon-yellow">{track.album || 'Album Title'}</p>
+            <div className="ml-4 flex-1 mb-1">
+              <h2 className="text-hot-magenta font-bold">{track.artist || 'Artist Name'}</h2>
+              <h2 className="text-electric-blue">{track.name || 'Song Title'}</h2>
             </div>
             <button
-              className="ml-4 px-2 py-1 bg-neon-pink text-white rounded-full hover:bg-neon-blue transition-all"
+              className="mb-1 mr-2 px-2 py-0 align-middle
+               bg-neon-pink text-white rounded-lg font-bold hover:bg-neon-blue transition-all"
               onClick={() => handleRemoveFromPlaylist(track)}
             >
               X
