@@ -179,16 +179,8 @@ function App() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
+
         <aside className="w-1/3 p-4 border-r border-gray-300 flex flex-col bg-electric-blue">
-          <div className="flex justify-center mb-4">
-            <SearchBar
-              text={text}
-              setText={setText}
-              onSubmit={handleSubmit}
-              handleSuggestions={handleSuggestions}
-              suggestions={suggestions}
-            />
-          </div>
           <div className="flex-1 overflow-y-auto">
             <Playlist
               playlistTracks={playlistTracks}
@@ -202,7 +194,17 @@ function App() {
             />
           </div>
         </aside>
+
         <main className="w-2/3 p-4 flex flex-col bg-vivid-yellow">
+          <div className="flex justify-center mb-4">
+            <SearchBar
+              text={text}
+              setText={setText}
+              onSubmit={handleSubmit}
+              handleSuggestions={handleSuggestions}
+              suggestions={suggestions}
+            />
+          </div>
           {query && <SearchResults query={query} />}
           <div className="flex-1 overflow-y-auto ">
             {(recommendedTracks.length > 0 || tracks.length > 0) && (

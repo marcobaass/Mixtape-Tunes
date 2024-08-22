@@ -1,3 +1,36 @@
+.walkman{
+  display: grid;
+  grid-template-rows: 22% 11% 52%;
+  grid-template-columns: 24% 10% 64% 7%;
+  grid-template-areas: ". . . ."
+                       ". . . ."
+                       ". . name ."
+                       ". . edit .";
+  background-image: url('src/assets/imgs/walkman_blank_3_no_window.png');
+  background-size: cover;
+  width: auto;
+  aspect-ratio: 1635 / 1274;
+  margin: auto;
+}
+
+.gridEdit {
+  grid-area: edit;
+  align-self: center;
+}
+
+.gridName {
+  grid-area: name;
+  align-self: center;
+}
+
+.gridInput {
+  grid-column: 2 / 4;
+  grid-row: 3 / 4;
+  align-self: center;
+}
+
+
+
 .playlist {
   display: grid;
   grid-template-columns: 3% 15% 64% 15% 3%;

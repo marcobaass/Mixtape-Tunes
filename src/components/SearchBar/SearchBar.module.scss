@@ -8,21 +8,3 @@
   list-style: none;
   padding: 8px;
 }
-
-.walkman{
-  display: grid;
-  grid-template-rows: 48% 20.5%;
-  grid-template-columns: 2% 90% 2%;
-  grid-template-areas: ". . ."
-             ". search .";
-  background-image: url('src/assets/imgs/walkman_blank_3_no_window.png');
-  background-size: cover;
-  width: 35rem;
-  aspect-ratio: 1635 / 1274;
-  margin: auto;
-}
-
-.gridSearch {
-  grid-area: search;
-  align-self: center;
-}

@@ -12,19 +12,21 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
 
       {isEditing ? (
         // editmode for Playlistname
-        <form onSubmit={handlePlaylistnameSubmit} className='flex gap-0.5 p-0.5 rounded-full justify-center bg-deep-black'>
-        <input onChange={(e) => setPlaylistName(e.target.value)}className="rounded-tl-xl rounded-bl-xl tracking-wider placeholder-center text-center grow" type="text" placeholder={playlistName} />
-        <button type="submit" onClick={() => setIsEditing(false)} className="text-white bg-neon-pink rounded-tr-xl rounded-br-xl py-0.2 px-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
-        save
-        </button>
-        </form>
+        <div className={`${styles.walkman} relative`}>
+          <form onSubmit={handlePlaylistnameSubmit} className={`${styles.gridInput} flex gap-0.5 p-0.5 rounded-full bg-deep-black max-w-[95%]`}>
+            <input onChange={(e) => setPlaylistName(e.target.value)} className="rounded-tl-xl rounded-bl-xl placeholder-center text-center grow" type="text" maxLength={25} placeholder={playlistName} />
+            <button type="submit" onClick={() => setIsEditing(false)} className="text-white bg-neon-pink rounded-tr-xl rounded-br-xl py-0.2 px-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
+            save
+            </button>
+          </form>
+        </div>
         ) : (
         // Playlist ready to Save
-        <div className='flex gap-1 justify-center items-center'>
-          <div>
-            <h2 className="text-deep-black m-0 mr-2 text-2xl">{playlistName}</h2>
+        <div className={`${styles.walkman} justify-center items-center`}>
+          <div className={`${styles.gridName} justify-self-center w-full max-w-[90%] text-center`}>
+            <h2 className="text-deep-black text-2xl text-wrap truncate">{playlistName}</h2>
           </div>
-          <button onClick={() => setIsEditing(true)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min inline-block hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
+          <button onClick={() => setIsEditing(true)} className={`${styles.gridEdit} justify-self-center text-white bg-neon-pink rounded-2xl px-3 py-0.5 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold`}>
             edit
           </button>
         </div>
