@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import usePlaylist from '../../hooks/usePlaylist';
 import styles from './App.module.scss';
 import SearchBar from '../SearchBar/SearchBar';
@@ -24,6 +24,9 @@ function App() {
   const [recommendedTracks, setRecommendedTracks] = useState([]);
   const [recommendationOffset, setRecommendationOffset] = useState(0);
   const [totalRecommendations, setTotalRecommendations] = useState(0);
+
+  const inputRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     console.log('Recommendation Offset:', recommendationOffset);
@@ -169,6 +172,13 @@ function App() {
     setRecommendedTracks([]);
   };
 
+  const handleOnBlur = (e, dropdownRef) => {
+    if (dropdownRef.current && dropdownRef.current.contains(e.relatedTarget)) {
+      return;
+    }
+    setSuggestions([]);
+  }
+
   return (
     <div className="screen flex flex-col h-screen overflow-hidden">
       <header className="p-4 bg-hot-magenta text-white text-center">
@@ -201,8 +211,11 @@ function App() {
               text={text}
               setText={setText}
               onSubmit={handleSubmit}
+              onBlur={handleOnBlur}
               handleSuggestions={handleSuggestions}
               suggestions={suggestions}
+              inputRef={inputRef}
+              dropdownRef={dropdownRef}
             />
           </div>
           {query && <SearchResults query={query} />}

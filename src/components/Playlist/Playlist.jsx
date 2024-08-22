@@ -8,7 +8,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
   }
 
   return (
-    <div className="p-4 max-w-md mx-auto space-y-2">
+    <div className="p-4 max-w-md mx-auto space-y-2 ">
 
       {isEditing ? (
         // editmode for Playlistname
@@ -33,7 +33,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         )
       }
 
-      <div className="overflow-y-auto max-h-[42vh] -space-y-1">
+      <div className="overflow-y-auto max-h-[40vh] -space-y-1">
         <div className="-space-y-1" >
           {playlistTracks.map((track, index) => (
             <div
