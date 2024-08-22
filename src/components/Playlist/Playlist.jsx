@@ -14,7 +14,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         // editmode for Playlistname
         <div className={`${styles.walkman} relative`}>
           <form onSubmit={handlePlaylistnameSubmit} className={`${styles.gridInput} flex gap-0.5 p-0.5 rounded-full bg-deep-black max-w-[95%]`}>
-            <input onChange={(e) => setPlaylistName(e.target.value)} className="rounded-tl-xl rounded-bl-xl placeholder-center text-center grow" type="text" maxLength={25} placeholder={playlistName} />
+            <input value={playlistName} onChange={(e) => setPlaylistName(e.target.value)} className="rounded-tl-xl rounded-bl-xl placeholder-center text-center grow" type="text" maxLength={25} placeholder={playlistName} />
             <button type="submit" onClick={() => setIsEditing(false)} className="text-white bg-neon-pink rounded-tr-xl rounded-br-xl py-0.2 px-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
             save
             </button>
@@ -33,7 +33,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         )
       }
 
-      <div className="overflow-y-auto max-h-[40vh] -space-y-1">
+      <div className="overflow-y-auto max-h-[42vh] -space-y-1">
         <div className="-space-y-1" >
           {playlistTracks.map((track, index) => (
             <div

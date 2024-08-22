@@ -191,7 +191,7 @@ function App() {
       <div className="flex flex-1 overflow-hidden">
 
         <aside className="w-1/3 p-4 border-r border-gray-300 flex flex-col bg-electric-blue">
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1">
             <Playlist
               playlistTracks={playlistTracks}
               handleRemoveFromPlaylist={handleRemoveFromPlaylist}
