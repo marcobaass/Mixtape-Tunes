@@ -237,12 +237,14 @@ function App() {
                   }
                   isPremium={isPremium}
                 />
-                {((recommendedTracks.length > 0 && recommendationOffset < totalRecommendations) ||
-                  (tracks.length > 0 && searchOffset < totalResults)) && (
-                  <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
-                    Load More
-                  </button>
-                )}
+                <div className="flex justify-center">
+                  {((recommendedTracks.length > 0 && recommendationOffset < totalRecommendations) ||
+                    (tracks.length > 0 && searchOffset < totalResults)) && (
+                    <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
+                      Load More
+                    </button>
+                  )}
+                </div>
               </>
             )}
           </div>
