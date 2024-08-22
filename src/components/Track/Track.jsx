@@ -34,9 +34,9 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
       />
 
 
-      <h2 className={`${styles.gridArtist} font-bold text-black`}>{track.artist || 'Artist Name'}</h2>
-      <h2 className={`${styles.gridSong} text-black`}>{track.name || 'Song Title'}</h2>
-      <h2 className={`${styles.gridAlbum} text-white`}>{track.album || 'Album Title'}</h2>
+      <h2 className={`${styles.gridArtist} font-bold text-black truncate w-full max-w-[95%] text-center`}>{track.artist || 'Artist Name'}</h2>
+      <h2 className={`${styles.gridSong} text-black truncate w-full max-w-[95%] text-center`}>{track.name || 'Song Title'}</h2>
+      <h2 className={`${styles.gridAlbum} text-white truncate w-full max-w-[95%] text-center`}>{track.album || 'Album Title'}</h2>
 
 
       {/* Playbutton */}

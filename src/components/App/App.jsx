@@ -172,11 +172,12 @@ function App() {
   return (
     <div className="screen flex flex-col h-screen overflow-hidden">
       <header className="p-4 bg-hot-magenta text-white text-center">
-        <h1 className="text-6xl">WALKIFY</h1>
+        <h1 className="text-8xl">WALKIFY</h1>
         <button onClick={handleLogout} className="rounded-full bg-neon-green px-4 py-1 mt-6 hover:bg-lime-green transition-colors duration-300 text-base font-bold">
           Log Out
         </button>
       </header>
+
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-1/3 p-4 border-r border-gray-300 flex flex-col bg-electric-blue">
           <div className="flex justify-center mb-4">

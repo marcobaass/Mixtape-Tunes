@@ -35,20 +35,20 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         {playlistTracks.map((track, index) => (
           <div
             key={index}
-            className={`${styles.playlist} flex items-center p-1 rounded-lg shadow-md text-white`}
+            className={`${styles.playlist}`}
           >
             <img
-              className="w-8 h-8 rounded-md mb-1 ml-1"
+              className={`${styles.gridImg} w-9 h-9 rounded-md`}
               src={track.image || "#"}
               alt={track.name || 'Track Image'}
             />
-            <div className="ml-4 flex-1 mb-1">
-              <h2 className="text-hot-magenta font-bold">{track.artist || 'Artist Name'}</h2>
-              <h2 className="text-electric-blue">{track.name || 'Song Title'}</h2>
-            </div>
+
+            <h2 className={`${styles.gridArtist} text-hot-magenta font-bold truncate w-full max-w-[95%] text-center`}>{track.artist || 'Artist Name'}</h2>
+            <h2 className={`${styles.gridSong} text-electric-blue truncate w-full max-w-[95%] text-center`}>{track.name || 'Song Title'}</h2>
+
             <button
-              className="mb-1 mr-2 px-2 py-0 align-middle
-               bg-neon-pink text-white rounded-lg font-bold hover:bg-neon-purple transition-colors duration-300 text-base"
+              className={`${styles.gridRemove} px-2 py-0 align-middle
+               bg-neon-pink text-white rounded-lg font-bold hover:bg-neon-purple transition-colors duration-300 text-base`}
               onClick={() => handleRemoveFromPlaylist(track)}
             >
               X
