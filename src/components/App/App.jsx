@@ -180,17 +180,17 @@ function App() {
   }
 
   return (
-    <div className="screen flex flex-col h-screen overflow-hidden">
+    <div className="screen flex flex-col h-screen md:overflow-hidden l-sm:overflow-auto">
       <header className="p-4 bg-hot-magenta text-white text-center">
-        <h1 className="text-8xl">WALKIFY</h1>
+        <h1 className="text-5xl md:text-7xl lg:text-8xl">WALKIFY</h1>
         <button onClick={handleLogout} className="rounded-full bg-neon-green px-4 py-1 mt-6 hover:bg-lime-green transition-colors duration-300 text-base font-bold">
           Log Out
         </button>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex md:flex-1 flex-col-reverse md:flex-row md:overflow-hidden l-md:overflow-auto">
 
-        <aside className="w-1/3 p-4 border-r border-gray-300 flex flex-col bg-electric-blue">
+        <aside className="lg:w-1/3 md:w-2/5 w-full p-4 border-r border-gray-300 flex flex-col l-sm:overflow-auto bg-electric-blue">
           <div className="flex-1">
             <Playlist
               playlistTracks={playlistTracks}
@@ -205,7 +205,7 @@ function App() {
           </div>
         </aside>
 
-        <main className="w-2/3 p-4 flex flex-col bg-vivid-yellow">
+        <main className="lg:w-2/3 md:w-3/5 w-full p-4 flex flex-col bg-vivid-yellow">
           <div className="flex justify-center mb-4">
             <SearchBar
               text={text}
@@ -219,7 +219,7 @@ function App() {
             />
           </div>
           {query && <SearchResults query={query} />}
-          <div className="flex-1 overflow-y-auto ">
+          <div className="flex-1 overflow-y-auto">
             {(recommendedTracks.length > 0 || tracks.length > 0) && (
               <>
                 <Tracklist
@@ -237,7 +237,7 @@ function App() {
                   }
                   isPremium={isPremium}
                 />
-                <div className="flex justify-center">
+                <div className="hidden md:flex justify-center">
                   {((recommendedTracks.length > 0 && recommendationOffset < totalRecommendations) ||
                     (tracks.length > 0 && searchOffset < totalResults)) && (
                     <button onClick={handleLoadMore} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">

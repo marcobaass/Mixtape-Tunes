@@ -6,6 +6,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'l-sm': {'raw': '(orientation: landscape) and (max-width: 767px)'},
+        'l-md': {'raw': '(orientation: landscape) and (min-width: 768px) and (max-width: 1023px)'},
+        'l-lg': {'raw': '(orientation: landscape) and (min-width: 1024px)'},
+      },
+
       colors: {
         'neon-pink': '#FF6EC7',
         'electric-blue': '#00CCFF',

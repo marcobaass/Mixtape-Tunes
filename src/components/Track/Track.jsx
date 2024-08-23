@@ -25,7 +25,7 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
   }, [])
 
   return (
-    <div className={`${styles.tape} m-1 rounded-lg max-w-[23rem] min-w-[19rem]`} style={tapeStyle}>
+    <div className={`${styles.tape} m-1 rounded-lg max-w-[23rem] min-w-[17rem] l-md:min-w-[13rem] flex-1`} style={tapeStyle}>
 
       <img
         className={`${styles.gridImg} object-cover rounded-xl p-2`}
