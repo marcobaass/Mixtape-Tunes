@@ -91,7 +91,6 @@ Track.propTypes = {
   }).isRequired,
   handleAddToPlaylist: PropTypes.func.isRequired,
   handlePlay: PropTypes.func.isRequired,
-  isPlaying: PropTypes.bool.isRequired,
   currentTrack: PropTypes.object, // Allow currentTrack to be null
   isPremium: PropTypes.bool.isRequired
 };

@@ -94,8 +94,14 @@ function App() {
 
   useEffect(() => {
     const checkSubscription = async () => {
-      const subscription = await Spotify.getUserSubscriptionLevel();
-      setIsPremium(subscription === 'premium');
+      try {
+        const subscription = await Spotify.getUserSubscriptionLevel();
+        console.log("Subscription level:", subscription);
+        setIsPremium(subscription === 'premium');
+      } catch (error) {
+        console.error("Error checking subscription level:", error);
+        setIsPremium(false);
+      }
     };
 
     checkSubscription();

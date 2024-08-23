@@ -22,7 +22,7 @@ const Spotify = {
 
       return accessToken;
     } else {
-      const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectUri}`;
+      const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public user-read-private&redirect_uri=${redirectUri}`;
       window.location = accessUrl;
     }
   },
@@ -109,14 +109,23 @@ const Spotify = {
   },
 
   async getUserSubscriptionLevel() {
-    const accessToken = Spotify.getAccessToken();
-    const response = await fetch('https://api.spotify.com/v1/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const userData = await response.json();
-    return userData.product;  // 'premium' or 'free'
+    try {
+      const accessToken = Spotify.getAccessToken();
+      console.log("Access Token:", accessToken);
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const userData = await response.json();
+      console.log("User Data:", userData);
+      return userData.product; // 'premium' or 'free'
+
+    } catch(error) {
+      console.error("Error fetching subscription level:", error);
+      console.log("Couldn't get the subscription level")
+      throw error;
+    }
   },
 
   async savePlaylist(playlistName, uriOfPlaylistTracks) {

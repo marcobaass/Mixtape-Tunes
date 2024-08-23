@@ -47,7 +47,6 @@ Tracklist.propTypes = {
   Spotify: PropTypes.shape({
     getAccessToken: PropTypes.func.isRequired,
     search: PropTypes.func.isRequired,
-    getUserId: PropTypes.func.isRequired,
     savePlaylist: PropTypes.func.isRequired,
     playTrack: PropTypes.func,
   }).isRequired,
