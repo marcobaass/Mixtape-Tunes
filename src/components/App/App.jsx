@@ -6,12 +6,16 @@ import SearchResults from '../SearchResults/SearchResults';
 import Tracklist from '../Tracklist/Tracklist';
 import Playlist from '../Playlist/Playlist';
 import Spotify from '../../services/Spotify';
+import { useLoading } from '../../context/LoadingContext';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+
 
 function App() {
   useEffect(() => {
     Spotify.getAccessToken();
   }, []);
 
+  const { isLoading, setLoading } = useLoading();
   const [text, setText] = useState("");
   const [tracks, setTracks] = useState([]);
   const [query, setQuery] = useState("");
@@ -46,18 +50,25 @@ function App() {
     handleSaveToSpotify,
   } = usePlaylist();
 
-  const handleSearch = (searchTerm, newSearch = false) => {
+  const handleSearch = async (searchTerm, newSearch = false) => {
     if (!searchTerm.trim()) {
       console.warn("Search term is empty. Skipping API request.");
       return;
     }
 
     const offset = newSearch ? 0 : searchOffset;
-    Spotify.search(searchTerm, offset).then(({ tracks, total, nextOffset }) => {
+
+    try {
+      setLoading(true); // Set loading to true
+      const { tracks, total, nextOffset } = await Spotify.search(searchTerm, offset);
       setTracks((prevTracks) => newSearch ? tracks : [...prevTracks, ...tracks]);
       setSearchOffset(nextOffset);
       setTotalResults(total);
-    });
+    } catch (error) {
+      console.error("Error during search:", error);
+    } finally {
+      setLoading(false); // Set loading to false
+    }
   };
 
   const handleSubmit = (e) => {
@@ -69,17 +80,22 @@ function App() {
   };
 
   const handleLoadMore = async () => {
-    if (recommendedTracks.length > 0) {
-      // Load more recommendations and append to the existing list
-      const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks, recommendationOffset);
-
-      // Append new tracks to the existing list of recommended tracks
-      setRecommendedTracks((prevTracks) => [...prevTracks, ...tracks]);
-      setRecommendationOffset(nextOffset);
-      setTotalRecommendations(total);
-    } else {
-      // Load more search results
-      handleSearch(query);
+    try {
+      setLoading(true); // Set loading to true
+      if (recommendedTracks.length > 0) {
+        // Load more recommendations and append to the existing list
+        const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks, recommendationOffset);
+        setRecommendedTracks((prevTracks) => [...prevTracks, ...tracks]);
+        setRecommendationOffset(nextOffset);
+        setTotalRecommendations(total);
+      } else {
+        // Load more search results
+        await handleSearch(query);
+      }
+    } catch (error) {
+      console.error("Error loading more:", error);
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -88,19 +104,30 @@ function App() {
       setSuggestions([]);
       return;
     }
-    const fetchedSuggestions = await Spotify.getSuggestions(inputValue);
-    setSuggestions(fetchedSuggestions);
+
+    try {
+      setLoading(true); // Set loading to true
+      const fetchedSuggestions = await Spotify.getSuggestions(inputValue);
+      setSuggestions(fetchedSuggestions);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    } finally {
+      setLoading(false); // Set loading to false
+    }
   };
 
   useEffect(() => {
     const checkSubscription = async () => {
       try {
+        setLoading(true); // Set loading to true
         const subscription = await Spotify.getUserSubscriptionLevel();
         console.log("Subscription level:", subscription);
         setIsPremium(subscription === 'premium');
       } catch (error) {
         console.error("Error checking subscription level:", error);
         setIsPremium(false);
+      } finally {
+        setLoading(false); // Set loading to false
       }
     };
 
@@ -144,21 +171,28 @@ function App() {
   };
 
   const getRecommendations = async (playlistTracks) => {
-    setRecommendationOffset(0); // Reset offset when fetching recommendations
-    const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks);
+    try {
+      setLoading(true); // Set loading to true
+      setRecommendationOffset(0); // Reset offset when fetching recommendations
+      const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks);
 
-    if (tracks && tracks.length > 0) {
-      if (currentAudio) {
-        currentAudio.pause();
+      if (tracks && tracks.length > 0) {
+        if (currentAudio) {
+          currentAudio.pause();
+        }
+        setTracks([]); // Clear the previous search results
+        setRecommendedTracks(tracks);
+        setRecommendationOffset(nextOffset);
+        setTotalRecommendations(total);
+        setCurrentAudio(null);
+        setIsPlaying(false);
+      } else {
+        console.log("No recommendations found or something went wrong.");
       }
-      setTracks([]); // Clear the previous search results
-      setRecommendedTracks(tracks);
-      setRecommendationOffset(nextOffset);
-      setTotalRecommendations(total);
-      setCurrentAudio(null);
-      setIsPlaying(false);
-    } else {
-      console.log("No recommendations found or something went wrong.");
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -226,6 +260,7 @@ function App() {
           </div>
           {query && <SearchResults query={query} />}
           <div className="flex-1 overflow-y-auto">
+            {isLoading && <LoadingSpinner />}
             {(recommendedTracks.length > 0 || tracks.length > 0) && (
               <>
                 <Tracklist
