@@ -16,6 +16,7 @@ export default function SearchBar({text, setText, onSubmit, handleSuggestions, s
     onSubmit({ preventDefault: () => {} });
  };
 
+ 
   return (
     <div className="relative">
       <form onSubmit={onSubmit} onBlur={(e) => onBlur(e, dropdownRef)} className={`${styles.gridSearch} flex items-center space-x-1 l-md:space-x-0.5 p-2 l-md:p-0.5 ml-3 mr-3 bg-bright-cyan rounded-full shadow-md max-w-md grow`}>

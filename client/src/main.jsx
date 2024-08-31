@@ -1,13 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './components/App/App'
+import Auth from './components/Auth/Auth'
 import { LoadingProvider } from './context/LoadingContext';
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <LoadingProvider>
-      <App />
+      <Auth />
     </LoadingProvider>
   </StrictMode>
 );

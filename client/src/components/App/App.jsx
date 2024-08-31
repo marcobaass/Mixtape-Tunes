@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import useAuth from '../../hooks/useAuth';
 import usePlaylist from '../../hooks/usePlaylist';
 import styles from './App.module.scss';
 import SearchBar from '../SearchBar/SearchBar';
@@ -10,10 +11,12 @@ import { useLoading } from '../../context/LoadingContext';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 
-function App() {
+function App({code}) {
+  const accessToken = useAuth(code);
+
   useEffect(() => {
-    Spotify.getAccessToken();
-  }, []);
+    console.log('App component rendered with access token:', accessToken);
+  }, [accessToken]);
 
   const { isLoading, setLoading } = useLoading();
   const [text, setText] = useState("");
@@ -32,13 +35,6 @@ function App() {
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    console.log('Recommendation Offset:', recommendationOffset);
-    console.log('Total Recommendations:', totalRecommendations);
-    console.log('Search Offset:', searchOffset);
-    console.log('Total Results:', totalResults);
-  }, [recommendationOffset, totalRecommendations, searchOffset, totalResults]);
-
   const {
     playlistTracks,
     playlistName,
@@ -49,6 +45,24 @@ function App() {
     handleRemoveFromPlaylist,
     handleSaveToSpotify,
   } = usePlaylist();
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        setLoading(true); // Set loading to true
+        const subscription = await Spotify.getUserSubscriptionLevel();
+        console.log("Subscription level:", subscription);
+        setIsPremium(subscription === 'premium');
+      } catch (error) {
+        console.error("Error checking subscription level:", error);
+        setIsPremium(false);
+      } finally {
+        setLoading(false); // Set loading to false
+      }
+    };
+
+    checkSubscription();
+  }, []);
 
   const handleSearch = async (searchTerm, newSearch = false) => {
     if (!searchTerm.trim()) {
@@ -115,24 +129,6 @@ function App() {
       setLoading(false); // Set loading to false
     }
   };
-
-  useEffect(() => {
-    const checkSubscription = async () => {
-      try {
-        setLoading(true); // Set loading to true
-        const subscription = await Spotify.getUserSubscriptionLevel();
-        console.log("Subscription level:", subscription);
-        setIsPremium(subscription === 'premium');
-      } catch (error) {
-        console.error("Error checking subscription level:", error);
-        setIsPremium(false);
-      } finally {
-        setLoading(false); // Set loading to false
-      }
-    };
-
-    checkSubscription();
-  }, []);
 
   const handlePlay = async (track) => {
     // If the same track is playing, pause it
