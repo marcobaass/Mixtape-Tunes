@@ -8,64 +8,54 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Create a SpotifyWebApi instance and configure it with your client credentials
+const spotifyApi = new SpotifyWebApi({
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  redirectUri: process.env.SPOTIFY_REDIRECT_URI,
+});
+
 app.post('/refresh', (req, res) => {
   const refreshToken = req.body.refreshToken;
-  console.log('Hi');
-  const spotifyApi = new SpotifyWebApi({
-    // clientId: 'd95043c9d49a45989c686b197cdd3e2a',
-    // clientSecret: 'a7796fc3365e424e88240240b71a413c',
-    // redirectUri: 'http://localhost:5173/callback',
-    clientId: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: process.env.SPOTIFY_REDIRECT_URI,
-    refreshToken
-    })
 
-    spotifyApi.refreshAccessToken()
+  spotifyApi.setRefreshToken(refreshToken); // Set the refresh token
+
+  spotifyApi.refreshAccessToken()
     .then((data) => {
-        res.json({
-          accessToken: data.body.access_token,
-          expiresIn: data.body.expires_in,
-        })
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(400)
-      })
+      res.json({
+        accessToken: data.body.access_token,
+        expiresIn: data.body.expires_in,
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.sendStatus(400);
+    });
 });
 
 app.post('/login', (req, res) => {
-  console.log('Login request received from useAuth hook');
-  console.log('Client ID:', process.env.SPOTIFY_CLIENT_ID);
-
   const code = req.body.code;
-  const spotifyApi = new SpotifyWebApi({
-    // clientId: 'd95043c9d49a45989c686b197cdd3e2a',
-    // clientSecret: 'a7796fc3365e424e88240240b71a413c',
-    // redirectUri: 'http://localhost:5173/callback'
-    clientId: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: process.env.SPOTIFY_REDIRECT_URI
-  })
 
-  spotifyApi.authorizationCodeGrant(code).then(data => {
-    res.json({
-      accessToken: data.body.access_token,
-      refreshToken: data.body.refresh_token,
-      expires_in: data.body.expires_in
+  spotifyApi.authorizationCodeGrant(code)
+    .then(data => {
+      res.json({
+        accessToken: data.body.access_token,
+        refreshToken: data.body.refresh_token,
+        expires_in: data.body.expires_in,
+      });
     })
-  }).catch((err) => {
-    console.log(err);
-    res.sendStatus(400)
-  });
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(400);
+    });
 });
 
 app.get('/api/userSubscriptionLevel', async (req, res) => {
-  console.log('Route: /api/userSubscriptionLevel arrived');
-  console.log('Authorization Header:', req.headers.authorization);
+  const token = req.headers.authorization.split(' ')[1];
+
+  spotifyApi.setAccessToken(token);
 
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    spotifyApi.setAccessToken(token);
     const response = await spotifyApi.getMe();
     const product = response.body.product;
     res.json({ product });
@@ -75,4 +65,21 @@ app.get('/api/userSubscriptionLevel', async (req, res) => {
   }
 });
 
-app.listen(3001)
+app.get('/api/search', async (req, res) => {
+  const { term, offset = 0, limit = 20 } = req.query;
+  const token = req.headers.authorization.split(' ')[1];
+
+  spotifyApi.setAccessToken(token);
+
+  try {
+    const response = await spotifyApi.searchTracks(term, { offset, limit });
+    res.json(response.body);
+  } catch (error) {
+    console.error('Error searching Spotify tracks:', error);
+    res.status(500).json({ error: 'Failed to search tracks' });
+  }
+});
+
+app.listen(3001, () => {
+  console.log('Server is running on port 3001');
+});

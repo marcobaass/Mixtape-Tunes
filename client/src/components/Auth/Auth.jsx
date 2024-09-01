@@ -1,9 +1,11 @@
 import React from 'react'
 import Login from '../Login/Login'
 import App from '../App/App';
-
-const code = new URLSearchParams(window.location.search).get('code');
+import useAuth from '../../hooks/useAuth';
 
 export default function Auth() {
-  return code ? <App code={code} /> : <Login />
+  const code = new URLSearchParams(window.location.search).get('code');
+  const accessToken = useAuth(code);
+
+  return accessToken ? <App accessToken={accessToken} /> : <Login />;
 }

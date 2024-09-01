@@ -11,8 +11,8 @@ import { useLoading } from '../../context/LoadingContext';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 
-function App({code}) {
-  const accessToken = useAuth(code);
+function App({accessToken}) {
+  // const accessToken = useAuth(code);
 
   useEffect(() => {
     console.log('App component rendered with access token:', accessToken);
@@ -74,7 +74,7 @@ function App({code}) {
 
     try {
       setLoading(true); // Set loading to true
-      const { tracks, total, nextOffset } = await Spotify.search(searchTerm, offset);
+      const { tracks, total, nextOffset } = await Spotify.search(searchTerm, offset, 20, accessToken); // Pass the token
       setTracks((prevTracks) => newSearch ? tracks : [...prevTracks, ...tracks]);
       setSearchOffset(nextOffset);
       setTotalResults(total);
@@ -121,7 +121,7 @@ function App({code}) {
 
     try {
       setLoading(true); // Set loading to true
-      const fetchedSuggestions = await Spotify.getSuggestions(inputValue);
+      const fetchedSuggestions = await Spotify.getSuggestions(inputValue, accessToken);
       setSuggestions(fetchedSuggestions);
     } catch (error) {
       console.error("Error fetching suggestions:", error);

@@ -59,33 +59,6 @@ const Spotify = {
     });
   },
 
-  async getAccessToken() {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/getAccessToken`);
-      if (!response.ok) {
-        // Unauthorized or other error, redirect to Spotify's authorization page
-        const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-        const redirectUri = import.meta.env.VITE_REDIRECT_URI; // Your redirect URI
-        const scopes = 'user-read-private user-read-email streaming user-library-read user-library-modify user-read-playback-state'; // Add the necessary scopes
-        const authEndpoint = 'https://accounts.spotify.com/authorize';
-
-        const spotifyAuthUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=code`;
-
-        window.location.href = spotifyAuthUrl;
-        return;
-      }
-      const data = await response.json();
-      accessToken = data.accessToken;
-    } catch (error) {
-      console.error('Error fetching access token:', error);
-    }
-    return accessToken;
-  },
-
-  async setAccessToken(token) {
-    accessToken = token;
-  },
-
   async logout() {
     // Clear local and session storage
     window.localStorage.removeItem('spotify_access_token');
@@ -103,9 +76,14 @@ const Spotify = {
     window.location.href = spotifyAuthUrl;
   },
 
-  async search(term, offset = 0, limit = 20) {
+  async search(term, offset = 0, limit = 20, accessToken) {
     try {
-      const response = await fetch(`${API_URL}/api/search?term=${encodeURIComponent(term)}&offset=${offset}&limit=${limit}`);
+      const response = await fetch(`${API_URL}/api/search?term=${encodeURIComponent(term)}&offset=${offset}&limit=${limit}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,  // Include the access token
+        },
+      });
+
       const data = await response.json();
 
       if (!data.tracks) {
@@ -133,22 +111,22 @@ const Spotify = {
     }
   },
 
-  async getSuggestions(query) {
+  async getSuggestions(query, accessToken) {
     if (!query) {
       return [];
     }
 
     try {
-      const token = await this.getAccessToken(); // Ensure you have the token
       const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track,artist&limit=5`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) {
         throw new Error('Error fetching suggestions');
       }
+
       const data = await response.json();
 
       const trackSuggestions = data.tracks.items.map(track => track.name) || [];
