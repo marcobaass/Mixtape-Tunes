@@ -12,7 +12,6 @@ import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 
 function App({accessToken}) {
-  // const accessToken = useAuth(code);
 
   useEffect(() => {
     console.log('App component rendered with access token:', accessToken);
@@ -50,9 +49,13 @@ function App({accessToken}) {
     const checkSubscription = async () => {
       try {
         setLoading(true); // Set loading to true
-        const subscription = await Spotify.getUserSubscriptionLevel();
-        console.log("Subscription level:", subscription);
-        setIsPremium(subscription === 'premium');
+        if (accessToken) {
+          const subscription = await Spotify.getUserSubscriptionLevel(accessToken); // Pass the access token
+          console.log("Subscription level:", subscription);
+          setIsPremium(subscription === 'premium');
+        } else {
+          console.warn("Access token not available, skipping subscription check.");
+        }
       } catch (error) {
         console.error("Error checking subscription level:", error);
         setIsPremium(false);
@@ -61,8 +64,10 @@ function App({accessToken}) {
       }
     };
 
-    checkSubscription();
-  }, []);
+    if (accessToken) {
+      checkSubscription();
+    }
+  }, [accessToken]); // Re-run when accessToken changes
 
   const handleSearch = async (searchTerm, newSearch = false) => {
     if (!searchTerm.trim()) {
@@ -170,7 +175,7 @@ function App({accessToken}) {
     try {
       setLoading(true); // Set loading to true
       setRecommendationOffset(0); // Reset offset when fetching recommendations
-      const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks);
+      const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks, 0, 20, accessToken);
 
       if (tracks && tracks.length > 0) {
         if (currentAudio) {
@@ -194,18 +199,47 @@ function App({accessToken}) {
 
   const handleLogout = () => {
     console.log("Log out button clicked");
-    Spotify.logout();
 
-    // Clear any other application state or UI updates
-    setTracks([]);
-    setQuery("");
-    setSearchOffset(0);
-    setTotalResults(0);
-    setIsPremium(false);
-    setCurrentAudio(null);
-    setSuggestions([]);
-    setIsPlaying(false);
-    setRecommendedTracks([]);
+    // Open a popup window for Spotify logout
+    const width = 500;
+    const height = 600;
+    const left = (window.innerWidth / 2) - (width / 2);
+    const top = (window.innerHeight / 2) - (height / 2);
+
+    const popup = window.open(
+      'https://accounts.spotify.com/logout',
+      'Spotify Logout',
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+
+    if (popup) {
+      setTimeout(() => {
+        if (!popup.closed) {
+          popup.close();
+        }
+
+        // Clear access tokens and any other session data
+        window.localStorage.removeItem('spotify_access_token');
+        window.sessionStorage.removeItem('spotify_access_token');
+
+        // Clear application state
+        setTracks([]);
+        setQuery("");
+        setSearchOffset(0);
+        setTotalResults(0);
+        setIsPremium(false);
+        setCurrentAudio(null);
+        setSuggestions([]);
+        setIsPlaying(false);
+        setRecommendedTracks([]);
+
+        // Redirect to your app's login or homepage
+        window.location.href = '/login';
+      }, 1000);
+    } else {
+      // Handle the case where the popup could not be opened
+      console.error('Popup could not be opened');
+    }
   };
 
   const handleOnBlur = (e, dropdownRef) => {
@@ -214,6 +248,7 @@ function App({accessToken}) {
     }
     setSuggestions([]);
   }
+  console.log('isPremium: ', isPremium);
 
   return (
     <div className="screen flex flex-col h-screen md:overflow-hidden l-sm:overflow-auto">

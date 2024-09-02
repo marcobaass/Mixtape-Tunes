@@ -8,6 +8,10 @@ export default function Tracklist({ tracks, handleAddToPlaylist, Spotify, handle
   useEffect(() => {
     console.log("Tracks in Tracklist: ", tracks);
   }, [tracks]);
+  
+  useEffect(() => {
+    console.log('Tracklist isPremium:', isPremium);
+  }, [isPremium]);
 
   return (
     <div className={`${styles.tracklistContainer} flex flex-nowrap md:flex-wrap gap-6 justify-start md:justify-center`}>
@@ -45,7 +49,6 @@ Tracklist.propTypes = {
   handleAddToPlaylist: PropTypes.func.isRequired,
   handlePlay: PropTypes.func.isRequired,
   Spotify: PropTypes.shape({
-    getAccessToken: PropTypes.func.isRequired,
     search: PropTypes.func.isRequired,
     savePlaylist: PropTypes.func.isRequired,
     playTrack: PropTypes.func,
