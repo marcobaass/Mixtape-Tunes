@@ -136,7 +136,11 @@ function App({accessToken}) {
   };
 
   const handlePlay = async (track) => {
-    // If the same track is playing, pause it
+    if (!accessToken) {
+      console.error('No access token available');
+      return;
+    }
+
     if (currentAudio && isPlaying && currentAudio.src === track.preview_url) {
       currentAudio.pause();
       setIsPlaying(false);
@@ -144,7 +148,6 @@ function App({accessToken}) {
       return;
     }
 
-    // Stop current audio if it exists
     if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
@@ -152,12 +155,10 @@ function App({accessToken}) {
     }
 
     if (isPremium) {
-      // Play full track if the user is a Premium subscriber
-      await Spotify.playTrack(track.uri);
-      setCurrentAudio(null); // Reset currentAudio since the full track is managed by Spotify
-      setIsPlaying(true); // Assume track is playing
+      await Spotify.playTrack(track.uri, accessToken);
+      setCurrentAudio(null);
+      setIsPlaying(true);
     } else if (track.preview_url) {
-      // Play 30-second preview if the user is a Free user
       const audio = new Audio(track.preview_url);
       setCurrentAudio(audio);
       setIsPlaying(true);

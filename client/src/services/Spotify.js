@@ -3,14 +3,12 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 let accessToken;
 
 const Spotify = {
-  async initializePlayer() {
+  async initializePlayer(accessToken) {
     return new Promise((resolve, reject) => {
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        this.getAccessToken()
-          .then(token => {
+        window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new window.Spotify.Player({
-              name: 'Your App Name',
-              getOAuthToken: cb => { cb(token); }
+                name: 'Your App Name',
+                getOAuthToken: cb => { cb(accessToken); }
             });
 
             // Error handling
@@ -21,43 +19,37 @@ const Spotify = {
 
             // Playback status updates
             player.addListener('player_state_changed', state => {
-              console.log(state);
+                console.log(state);
             });
 
             // Ready
             player.addListener('ready', ({ device_id }) => {
-              console.log('Ready to play on device', device_id);
-              resolve({ player, device_id });
+                console.log('Ready with Device ID', device_id);
+                resolve({ player, device_id });
             });
 
             // Not Ready
             player.addListener('not_ready', ({ device_id }) => {
-              console.log('Device ID has gone offline', device_id);
-              reject(new Error('Spotify Player not ready'));
+                console.log('Device ID has gone offline', device_id);
+                reject(new Error('Spotify Player not ready'));
             });
 
-            // Connect to the player!
             player.connect();
-          })
-          .catch(error => {
-            console.error('Error getting access token:', error);
-            reject(error);
-          });
-      };
+        };
 
-      const loadSpotifySDK = () => {
-        if (!document.getElementById('spotify-sdk')) {
-          const script = document.createElement('script');
-          script.id = 'spotify-sdk';
-          script.src = 'https://sdk.scdn.co/spotify-player.js';
-          script.async = true;
-          document.body.appendChild(script);
-        }
-      };
+        const loadSpotifySDK = () => {
+            if (!document.getElementById('spotify-sdk')) {
+                const script = document.createElement('script');
+                script.id = 'spotify-sdk';
+                script.src = 'https://sdk.scdn.co/spotify-player.js';
+                script.async = true;
+                document.body.appendChild(script);
+            }
+        };
 
-      loadSpotifySDK();
+        loadSpotifySDK();
     });
-  },
+},
 
   async search(term, offset = 0, limit = 20, accessToken) {
     try {
@@ -182,24 +174,52 @@ const Spotify = {
     }
   },
 
-  async playTrack(uri) {
+  async playTrack(uri, accessToken) {
     try {
-      const { device_id } = await this.initializePlayer();
-      const response = await fetch(`${API_URL}/api/playTrack`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ uri, device_id }),
-      });
+        // Initialize the Spotify Player
+        const player = new window.Spotify.Player({
+            name: 'Walkify',
+            getOAuthToken: cb => { cb(accessToken); },
+            volume: 0.5
+        });
 
-      if (response.ok) {
-        console.log('Playback started');
-      } else {
-        throw new Error('Failed to start playback');
-      }
+        player.addListener('ready', ({ device_id }) => {
+            console.log('Ready with Device ID', device_id);
+
+            // Use Spotify's API to transfer playback to the Web Playback SDK's device
+            fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ uris: [uri] }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Playback started');
+                } else {
+                    console.error('Failed to start playback:', response);
+                }
+            }).catch(error => {
+                console.error('Error starting playback:', error);
+            });
+        });
+
+        player.addListener('not_ready', ({ device_id }) => {
+            console.log('Device ID has gone offline', device_id);
+        });
+
+        // Error handling
+        player.addListener('initialization_error', ({ message }) => { console.error('Initialization Error:', message); });
+        player.addListener('authentication_error', ({ message }) => { console.error('Authentication Error:', message); });
+        player.addListener('account_error', ({ message }) => { console.error('Account Error:', message); });
+        player.addListener('playback_error', ({ message }) => { console.error('Playback Error:', message); });
+
+        // Connect to the player!
+        player.connect();
+
     } catch (error) {
-      console.error('Error playing track:', error);
+        console.error('Error playing track:', error);
     }
   },
 
