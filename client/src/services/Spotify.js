@@ -1,55 +1,160 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-let accessToken;
+let playerInstance = null;
+let deviceId = null;
+let initializePromise = null;
 
 const Spotify = {
-  async initializePlayer(accessToken) {
-    return new Promise((resolve, reject) => {
-        window.onSpotifyWebPlaybackSDKReady = () => {
-            const player = new window.Spotify.Player({
-                name: 'Your App Name',
-                getOAuthToken: cb => { cb(accessToken); }
-            });
+  /**
+   * Initializes the Spotify Web Playback SDK Player.
+   * @param {string} accessTokenParam - The OAuth access token.
+   * @param {function} setIsPlaying - Callback to update playing state.
+   * @returns {Promise<{player: Object, device_id: string}>}
+   */
+  async initializePlayer(accessTokenParam, setIsPlaying) {
+    // If player is already initialized and deviceId is available, return immediately
+    if (playerInstance && deviceId) {
+      console.log('Player instance already exists with device ID:', deviceId);
+      return { player: playerInstance, device_id: deviceId };
+    }
 
-            // Error handling
-            player.addListener('initialization_error', ({ message }) => { console.error(message); });
-            player.addListener('authentication_error', ({ message }) => { console.error(message); });
-            player.addListener('account_error', ({ message }) => { console.error(message); });
-            player.addListener('playback_error', ({ message }) => { console.error(message); });
+    // If initialization is already in progress, return the existing promise
+    if (initializePromise) {
+      return initializePromise;
+    }
 
-            // Playback status updates
-            player.addListener('player_state_changed', state => {
-                console.log(state);
-            });
+    // Create a new initialization promise
+    initializePromise = new Promise((resolve, reject) => {
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        console.log('Spotify Web Playback SDK is ready');
 
-            // Ready
-            player.addListener('ready', ({ device_id }) => {
-                console.log('Ready with Device ID', device_id);
-                resolve({ player, device_id });
-            });
+        playerInstance = new window.Spotify.Player({
+          name: 'Your App Name',
+          getOAuthToken: cb => { cb(accessTokenParam); }
+        });
 
-            // Not Ready
-            player.addListener('not_ready', ({ device_id }) => {
-                console.log('Device ID has gone offline', device_id);
-                reject(new Error('Spotify Player not ready'));
-            });
+        // Error handling
+        playerInstance.addListener('initialization_error', ({ message }) => {
+          console.error('Initialization error:', message);
+        });
+        playerInstance.addListener('authentication_error', ({ message }) => {
+          console.error('Authentication error:', message);
+        });
+        playerInstance.addListener('account_error', ({ message }) => {
+          console.error('Account error:', message);
+        });
+        playerInstance.addListener('playback_error', ({ message }) => {
+          console.error('Playback error:', message);
+        });
 
-            player.connect();
-        };
+        // Playback status updates
+        playerInstance.addListener('player_state_changed', state => {
+          if (!state) {
+            console.warn('Player state changed: state is null');
+            return;
+          }
+          const { paused } = state;
+          console.log('Player state changed:', state);
+          setIsPlaying(!paused);
+        });
 
-        const loadSpotifySDK = () => {
-            if (!document.getElementById('spotify-sdk')) {
-                const script = document.createElement('script');
-                script.id = 'spotify-sdk';
-                script.src = 'https://sdk.scdn.co/spotify-player.js';
-                script.async = true;
-                document.body.appendChild(script);
-            }
-        };
+        // Ready
+        playerInstance.addListener('ready', ({ device_id }) => {
+          console.log('Player is ready with Device ID:', device_id);
+          deviceId = device_id;
+          resolve({ player: playerInstance, device_id });
+        });
 
-        loadSpotifySDK();
+        // Not Ready
+        playerInstance.addListener('not_ready', ({ device_id }) => {
+          console.warn('Player is not ready with Device ID:', device_id);
+          reject(new Error('Spotify Player not ready'));
+        });
+
+        console.log('Connecting to Spotify Player...');
+        playerInstance.connect().then(success => {
+          if (success) {
+            console.log('The Web Playback SDK successfully connected to Spotify!');
+          } else {
+            console.error('The Web Playback SDK could not connect to Spotify.');
+            reject(new Error('Player failed to connect.'));
+          }
+        });
+      };
+
+      const loadSpotifySDK = () => {
+        if (!document.getElementById('spotify-sdk')) {
+          console.log('Loading Spotify Web Playback SDK script...');
+          const script = document.createElement('script');
+          script.id = 'spotify-sdk';
+          script.src = 'https://sdk.scdn.co/spotify-player.js';
+          script.async = true;
+          document.body.appendChild(script);
+        } else if (window.Spotify) {
+          console.log('Spotify SDK script already loaded');
+          window.onSpotifyWebPlaybackSDKReady();
+        }
+      };
+
+      loadSpotifySDK();
     });
-},
+
+    return initializePromise;
+  },
+
+  /**
+   * Plays a track using the Spotify Web Playback SDK.
+   * @param {string} uri - The Spotify URI of the track to play.
+   * @param {string} accessTokenParam - The OAuth access token.
+   * @param {function} setIsPlaying - Callback to update playing state.
+   */
+  async playTrack(uri, accessTokenParam, setIsPlaying) {
+    try {
+      const { player, device_id } = await this.initializePlayer(accessTokenParam, setIsPlaying);
+
+      if (device_id) {
+        console.log(`Playing track on device ID: ${device_id}`);
+        const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ uris: [uri] }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessTokenParam}`,
+          },
+        });
+
+        if (response.ok) {
+          console.log('Playback started');
+        } else {
+          const errorData = await response.json();
+          console.error('Error starting playback:', errorData);
+        }
+      } else {
+        console.error('No device ID found');
+      }
+    } catch (error) {
+      console.error('Error playing track:', error);
+    }
+  },
+
+  /**
+   * Pauses the currently playing track.
+   * @param {function} setIsPlaying - Callback to update playing state.
+   */
+  async pause(setIsPlaying) {
+    try {
+      if (playerInstance) {
+        console.log('Pausing playback...');
+        await playerInstance.pause();
+        setIsPlaying(false);
+        console.log('Playback paused');
+      } else {
+        console.error('Spotify Player is not initialized');
+      }
+    } catch (error) {
+      console.error('Error pausing track:', error);
+    }
+  },
 
   async search(term, offset = 0, limit = 20, accessToken) {
     try {
@@ -171,55 +276,6 @@ const Spotify = {
       }
     } catch (error) {
       console.error('Error saving playlist:', error);
-    }
-  },
-
-  async playTrack(uri, accessToken) {
-    try {
-        // Initialize the Spotify Player
-        const player = new window.Spotify.Player({
-            name: 'Walkify',
-            getOAuthToken: cb => { cb(accessToken); },
-            volume: 0.5
-        });
-
-        player.addListener('ready', ({ device_id }) => {
-            console.log('Ready with Device ID', device_id);
-
-            // Use Spotify's API to transfer playback to the Web Playback SDK's device
-            fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
-                method: 'PUT',
-                body: JSON.stringify({ uris: [uri] }),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            }).then(response => {
-                if (response.ok) {
-                    console.log('Playback started');
-                } else {
-                    console.error('Failed to start playback:', response);
-                }
-            }).catch(error => {
-                console.error('Error starting playback:', error);
-            });
-        });
-
-        player.addListener('not_ready', ({ device_id }) => {
-            console.log('Device ID has gone offline', device_id);
-        });
-
-        // Error handling
-        player.addListener('initialization_error', ({ message }) => { console.error('Initialization Error:', message); });
-        player.addListener('authentication_error', ({ message }) => { console.error('Authentication Error:', message); });
-        player.addListener('account_error', ({ message }) => { console.error('Account Error:', message); });
-        player.addListener('playback_error', ({ message }) => { console.error('Playback Error:', message); });
-
-        // Connect to the player!
-        player.connect();
-
-    } catch (error) {
-        console.error('Error playing track:', error);
     }
   },
 

@@ -25,6 +25,7 @@ function App({accessToken}) {
   const [totalResults, setTotalResults] = useState(0);
   const [isPremium, setIsPremium] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
+  const [currentTrack, setCurrentTrack] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [recommendedTracks, setRecommendedTracks] = useState([]);
@@ -68,6 +69,68 @@ function App({accessToken}) {
       checkSubscription();
     }
   }, [accessToken]); // Re-run when accessToken changes
+
+  useEffect(() => {
+    // Ensure the player is initialized when the component mounts
+    if (accessToken && isPremium) {
+        Spotify.initializePlayer(accessToken, setIsPlaying);
+    }
+  }, [accessToken, isPremium]);
+
+  const handlePlay = async (track) => {
+    if (!accessToken) {
+      console.error('No access token available');
+      return;
+    }
+
+    if (isPremium) {
+      try {
+        const { player } = await Spotify.initializePlayer(accessToken, setIsPlaying);
+        if (currentTrack && currentTrack.uri === track.uri && isPlaying) {
+          await Spotify.pause(setIsPlaying);
+        } else if (player) {
+          await Spotify.playTrack(track.uri, accessToken, setIsPlaying);
+          setCurrentTrack(track);
+        } else {
+          console.error('Player is not initialized');
+        }
+      } catch (error) {
+        console.error('Error in playback:', error);
+      }
+    } else if (track.preview_url) {
+      // Handle preview audio playback for free users
+      if (currentTrack && currentTrack.uri === track.uri && isPlaying) {
+        // If the same track is already playing, stop the preview
+        currentAudio.pause();
+        currentAudio.currentTime = 0;  // Reset the playback to the beginning
+        setIsPlaying(false);
+        setCurrentAudio(null);
+        setCurrentTrack(null);
+      } else {
+        // If a different track is playing, stop it first
+        if (currentAudio) {
+          currentAudio.pause();
+          setIsPlaying(false);
+        }
+
+        const audio = new Audio(track.preview_url);
+        setCurrentAudio(audio);
+        setCurrentTrack(track);
+
+        audio.play();
+        setIsPlaying(true);
+
+        // Handle when the preview ends
+        audio.onended = () => {
+          setIsPlaying(false);
+          setCurrentAudio(null);
+          setCurrentTrack(null);
+        };
+      }
+    } else {
+      alert('No preview available for this track.');
+    }
+  };
 
   const handleSearch = async (searchTerm, newSearch = false) => {
     if (!searchTerm.trim()) {
@@ -132,43 +195,6 @@ function App({accessToken}) {
       console.error("Error fetching suggestions:", error);
     } finally {
       setLoading(false); // Set loading to false
-    }
-  };
-
-  const handlePlay = async (track) => {
-    if (!accessToken) {
-      console.error('No access token available');
-      return;
-    }
-
-    if (currentAudio && isPlaying && currentAudio.src === track.preview_url) {
-      currentAudio.pause();
-      setIsPlaying(false);
-      setCurrentAudio(null);
-      return;
-    }
-
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      setIsPlaying(false);
-    }
-
-    if (isPremium) {
-      await Spotify.playTrack(track.uri, accessToken);
-      setCurrentAudio(null);
-      setIsPlaying(true);
-    } else if (track.preview_url) {
-      const audio = new Audio(track.preview_url);
-      setCurrentAudio(audio);
-      setIsPlaying(true);
-      audio.play();
-      audio.onended = () => {
-        setIsPlaying(false);
-        setCurrentAudio(null);
-      };
-    } else {
-      alert('No preview available for this track.');
     }
   };
 
@@ -301,13 +327,7 @@ function App({accessToken}) {
                   Spotify={Spotify}
                   handlePlay={handlePlay}
                   isPlaying={isPlaying}
-                  currentTrack={
-                    currentAudio
-                      ? (recommendedTracks.length > 0
-                          ? recommendedTracks.find(track => track.preview_url === currentAudio.src)
-                          : tracks.find(track => track.preview_url === currentAudio.src))
-                      : null
-                  }
+                  currentTrack={currentTrack}
                   isPremium={isPremium}
                 />
                 <div className="hidden md:flex justify-center">
