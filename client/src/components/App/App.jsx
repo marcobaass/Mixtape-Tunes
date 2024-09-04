@@ -165,8 +165,14 @@ function App({accessToken}) {
       setLoading(true); // Set loading to true
       if (recommendedTracks.length > 0) {
         // Load more recommendations and append to the existing list
-        const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks, recommendationOffset);
-        setRecommendedTracks((prevTracks) => [...prevTracks, ...tracks]);
+        const { tracks, total, nextOffset } = await Spotify.getRecommendations(playlistTracks, recommendationOffset, 20, accessToken);
+
+        const allTracks = [...recommendedTracks, ...tracks];
+      const filteredTracks = Array.from(new Set(allTracks.map(track => track.uri)))
+                                  .map(uri => allTracks.find(track => track.uri === uri));
+
+        setRecommendedTracks(filteredTracks);
+        // setRecommendedTracks((prevTracks) => [...prevTracks, ...tracks]);
         setRecommendationOffset(nextOffset);
         setTotalRecommendations(total);
       } else {
@@ -298,6 +304,7 @@ function App({accessToken}) {
               isEditing={isEditing}
               setIsEditing={setIsEditing}
               getRecommendations={getRecommendations}
+              accessToken={accessToken}
             />
           </div>
         </aside>

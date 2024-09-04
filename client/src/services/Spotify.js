@@ -257,10 +257,10 @@ const Spotify = {
     }
   },
 
-  async savePlaylist(playlistName, uriOfPlaylistTracks, accessToken) {
-    console.log(accessToken);
+  async savePlaylist(playlistName, uriArray, accessToken) {
+    console.log('Accesstoken to save Playlist', accessToken);
 
-    if (!playlistName || !uriOfPlaylistTracks.length) {
+    if (!playlistName || !uriArray.length) {
       console.warn('Playlist name or track URIs missing');
       return;
     }
@@ -296,7 +296,7 @@ const Spotify = {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uris: uriOfPlaylistTracks,  // List of track URIs
+          uris: uriArray,  // List of track URIs
         }),
       });
 
@@ -333,7 +333,7 @@ const Spotify = {
     const seedTracks = randomTracks.map(track => track.id).join(',');
 
     try {
-      const response = await fetch(`https://api.spotify.com/v1/recommendations?limit=20&seed_tracks=${seedTracks}`, {
+      const response = await fetch(`https://api.spotify.com/v1/recommendations?offset=${offset}&limit=${limit}&seed_tracks=${seedTracks}`, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
         },

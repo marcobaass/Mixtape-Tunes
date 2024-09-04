@@ -25,9 +25,11 @@ export default function usePlaylist() {
     );
   };
 
-  const handleSaveToSpotify = (playlistTracks) => {
+  const handleSaveToSpotify = (playlistTracks, accessToken) => {
     const uriArray = playlistTracks.map(track => track.uri);
-    Spotify.savePlaylist(playlistName, uriArray)
+    console.log('Access token in handleSaveToSpotify:', accessToken);
+
+    Spotify.savePlaylist(playlistName, uriArray, accessToken)
     .then(() => {
       setPlaylistTracks([]);
       setPlaylistName("Your Playlist");
