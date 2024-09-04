@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import axios from "axios";
 
 const API_URL = 'http://localhost:3001';
@@ -7,17 +7,15 @@ export default function useAuth(code, setLoading) {
   const [accessToken, setAccessToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
   const [expiresIn, setExpiresIn] = useState(null);
-  const loginRef = useRef(false);
 
   useEffect(() => {
-    console.log(loginRef.current);
     console.log('starting auth hook');
     console.log(`${API_URL}/login`);
     console.log('Authorization code:', code);
 
-    if (!code || loginRef.current === true) {
+    if (!code) {
       console.log('No authorization code found, redirecting to login...');
-      setLoading(true);
+      setLoading(false);
       // window.location.href = '/login'; // or any route that serves your login page
       return;
     }
@@ -25,7 +23,6 @@ export default function useAuth(code, setLoading) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        loginRef.current = true;
         console.log('Sending POST request to /login with code:', code);
 
         const response = await axios.post(`${API_URL}/login`, {
@@ -44,8 +41,7 @@ export default function useAuth(code, setLoading) {
       } catch (error) {
           console.log('Error during Spotify login:', error);
       } finally {
-          setLoading(false)
-          loginRef.current = false;
+          setLoading(false);
       }
     };
 

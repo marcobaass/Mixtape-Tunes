@@ -41,7 +41,7 @@ app.post('/login', (req, res) => {
       res.json({
         accessToken: data.body.access_token,
         refreshToken: data.body.refresh_token,
-        expires_in: data.body.expires_in,
+        expiresIn: data.body.expires_in,
       });
     })
     .catch((err) => {

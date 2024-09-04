@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import useAuth from '../../hooks/useAuth';
 import usePlaylist from '../../hooks/usePlaylist';
 import styles from './App.module.scss';
 import SearchBar from '../SearchBar/SearchBar';
@@ -259,7 +258,7 @@ function App({accessToken}) {
         setSuggestions([]);
         setIsPlaying(false);
         setRecommendedTracks([]);
-
+        setLoading(false);
         // Redirect to your app's login or homepage
         window.location.href = '/login';
       }, 1000);

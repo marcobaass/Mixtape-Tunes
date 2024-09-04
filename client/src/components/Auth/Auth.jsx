@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
-import Login from '../Login/Login'
+import React, { useState, useEffect } from 'react';
+import Login from '../Login/Login';
 import App from '../App/App';
 import useAuth from '../../hooks/useAuth';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 export default function Auth() {
-  const [isLoading, setLoading] = useState(true);
   const code = new URLSearchParams(window.location.search).get('code');
-  const accessToken = useAuth(code, setLoading);
+  const [isLoading, setLoading] = useState(!!code);
+  const [accessToken, setAccessToken] = useState(null);
 
+  const fetchedAccessToken = useAuth(code, setLoading);
+
+  useEffect(() => {
+    if (fetchedAccessToken && !accessToken) {
+      setAccessToken(fetchedAccessToken);
+    }
+  }, [fetchedAccessToken, accessToken]);
+
+  // If there's no code and no accessToken, show the login page
+  if (!code && !accessToken) {
+    return <Login />;
+  }
+
+  // Show the loading spinner while loading
+  if (accessToken) {
+    return <App accessToken={accessToken} />;
+  }
+  
   if (isLoading) {
     return (
       <div className="flex flex-1 h-screen justify-center items-center">
-        <LoadingSpinner /> {/* Show the loading spinner */}
+        <LoadingSpinner />
       </div>
     );
   }
 
-  return accessToken ? <App accessToken={accessToken} /> : <Login />;
+  // If we have an access token, show the app
+
+  return <Login />; // Default fallback in case of unexpected issues
 }
