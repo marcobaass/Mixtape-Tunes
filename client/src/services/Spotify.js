@@ -13,6 +13,12 @@ const Spotify = {
    */
   async initializePlayer(accessTokenParam, setIsPlaying) {
     // If player is already initialized and deviceId is available, return immediately
+
+    if (!accessTokenParam) {
+      console.error('Access token is required to initialize the player.');
+      return;
+    }
+
     if (playerInstance && deviceId) {
       console.log('Player instance already exists with device ID:', deviceId);
       return { player: playerInstance, device_id: deviceId };
@@ -29,7 +35,7 @@ const Spotify = {
         console.log('Spotify Web Playback SDK is ready');
 
         playerInstance = new window.Spotify.Player({
-          name: 'Your App Name',
+          name: 'Walkify',
           getOAuthToken: cb => { cb(accessTokenParam); }
         });
 
@@ -253,7 +259,7 @@ const Spotify = {
 
   async savePlaylist(playlistName, uriOfPlaylistTracks, accessToken) {
     console.log(accessToken);
-    
+
     if (!playlistName || !uriOfPlaylistTracks.length) {
       console.warn('Playlist name or track URIs missing');
       return;
