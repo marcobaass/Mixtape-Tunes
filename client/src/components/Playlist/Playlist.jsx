@@ -57,18 +57,29 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
             </div>
           ))}
         </div>
-        {playlistTracks.length > 0 && !isEditing && (
-          <button onClick={() => handleSaveToSpotify(playlistTracks, accessToken)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 mr-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
-            Save to Spotify
-          </button>
-        )}
-        {playlistTracks.length > 0 && (
-          <button onClick={() => getRecommendations(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
-            Get recommendations
-          </button>
-        )}
-            </div>
+
+        <div>
+          {(playlistTracks.length > 0 && !isEditing) ? (
+            <button onClick={() => handleSaveToSpotify(playlistTracks, accessToken)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 mr-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
+              Save to Spotify
+            </button>
+            ) : (
+              <button className="text-white bg-gray-400 rounded-2xl px-3 py-0.5 h-min mt-2 mr-2 text-sm font-bold cursor-default">
+                {(playlistTracks.length === 0) ? (
+                  'Add Tracks first'
+                ) : (
+                  'Name Playlist first'
+                )}
+              </button>
+            )}
+          {playlistTracks.length > 0 && (
+            <button onClick={() => getRecommendations(playlistTracks)} className="text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold">
+              Get recommendations
+            </button>
+          )}
+        </div>
       </div>
+    </div>
   );
 }
 
