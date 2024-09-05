@@ -16,7 +16,7 @@ export default function SearchBar({text, setText, onSubmit, handleSuggestions, s
     onSubmit({ preventDefault: () => {} });
  };
 
- 
+
   return (
     <div className="relative">
       <form onSubmit={onSubmit} onBlur={(e) => onBlur(e, dropdownRef)} className={`${styles.gridSearch} flex items-center space-x-1 l-md:space-x-0.5 p-2 l-md:p-0.5 ml-3 mr-3 bg-bright-cyan rounded-full shadow-md max-w-md grow`}>
@@ -32,7 +32,7 @@ export default function SearchBar({text, setText, onSubmit, handleSuggestions, s
           autoComplete='off'
           ref={inputRef}
         />
-        <button type="submit" className="px-4 l-md:px-2 py-2 l-md:py-0.5 bg-hot-magenta text-white rounded-tl-lg rounded-bl-lg rounded-tr-[50px] rounded-br-[50px] hover:bg-neon-pink focus:outline-none focus:ring-2 focus:ring-blue-500">search</button>
+        <button type="submit" className="px-4 l-md:px-2 py-1 l-md:py-0.5 bg-hot-magenta text-white rounded-tl-lg rounded-bl-lg rounded-tr-[50px] rounded-br-[50px] hover:bg-neon-pink focus:outline-none focus:ring-2 focus:ring-blue-500">search</button>
       </form>
       {suggestions.length > 0 && (
         <ul ref={dropdownRef} className={`${styles.suggestions} absolute bg-white border border-gray-300 mt-1 w-full rounded-lg shadow-lg`}>

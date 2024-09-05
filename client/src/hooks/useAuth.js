@@ -1,88 +1,81 @@
-import { useState, useEffect, useRef } from 'react'
-import axios from "axios";
+import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 const API_URL = 'http://localhost:3001';
 
 export default function useAuth(code, setLoading) {
-  const [accessToken, setAccessToken] = useState(null);
-  const [refreshToken, setRefreshToken] = useState(null);
-  const [expiresIn, setExpiresIn] = useState(null);
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
+  const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || null);
+  const [expiresIn, setExpiresIn] = useState(localStorage.getItem('expiresIn') || null);
   const loginRef = useRef(false);
 
   useEffect(() => {
-    console.log(loginRef.current);
-    console.log('starting auth hook');
-    console.log(`${API_URL}/login`);
-    console.log('Authorization code:', code);
+    // Only attempt login when code is present (initial login)
+    if (code && !accessToken && !loginRef.current) {
+      console.log('Attempting login with code...');
+      const login = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.post(`${API_URL}/login`, { code });
+          const { accessToken, refreshToken, expiresIn } = response.data;
 
-    if (!code || loginRef.current === true) {
-      console.log('No authorization code found, redirecting to login...');
-      setLoading(true);
-      // window.location.href = '/login'; // or any route that serves your login page
-      return;
+          setAccessToken(accessToken);
+          setRefreshToken(refreshToken);
+          setExpiresIn(expiresIn);
+
+          // Store tokens in localStorage
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem('expiresIn', expiresIn);
+
+          window.history.replaceState({}, null, '/');  // Remove the code from the URL
+        } catch (error) {
+          console.error('Error during login:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      login();
     }
+  }, [code, accessToken, setLoading]);
 
-    const fetchData = async () => {
+  // Refresh token logic (this runs independently of the code logic)
+  useEffect(() => {
+    if (!refreshToken || !expiresIn) return;
+
+    const refreshAccessToken = async () => {
       try {
-        setLoading(true);
-        loginRef.current = true;
-        console.log('Sending POST request to /login with code:', code);
+        const response = await axios.post(`${API_URL}/refresh`, { refreshToken });
+        const { accessToken, expiresIn } = response.data;
 
-        const response = await axios.post(`${API_URL}/login`, {
-          code,
-        });
-          console.log('Login response:', response.data);
-          setAccessToken(response.data.accessToken);
-          setRefreshToken(response.data.refreshToken);
-          setExpiresIn(response.data.expiresIn);
+        setAccessToken(accessToken);
+        setExpiresIn(expiresIn);
 
-          console.log('Access Token:', response.data.accessToken);
-          console.log('Refresh Token:', response.data.refreshToken);
-          console.log('Expires In:', response.data.expiresIn);
+        // Update localStorage
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('expiresIn', expiresIn);
 
-          window.history.replaceState({}, null, '/');
+        console.log('Access token refreshed');
       } catch (error) {
-          console.log('Error during Spotify login:', error);
-      } finally {
-          setLoading(false)
-          loginRef.current = false;
+        console.error('Error refreshing token:', error);
+        window.location = '/';  // Redirect to login if refresh fails
       }
     };
 
-    if (code) {
-      fetchData();
-    }
-  }, [code, setLoading]);
+    // Calculate the expiration time (in milliseconds)
+    const expirationTime = Date.now() + expiresIn * 1000;  // Calculate when the token expires
 
-  useEffect(() => {
-    if (!refreshToken ||!expiresIn) return;
-
-    // Log before setting up the refresh interval
-    console.log('Setting up refresh token interval');
-    console.log('Refresh Token:', refreshToken);
-    console.log('Expires In:', expiresIn);
-
+    // Set up an interval to check token expiration every 60 seconds
     const interval = setInterval(() => {
+      const timeRemaining = expirationTime - Date.now(); // Calculate remaining time
 
-      axios.post(`${API_URL}/refresh`, {
-        refreshToken,
-      }).then(res => {
-        console.log('Refresh response', res.data);
-        setAccessToken(res.data.accessToken);
-        setExpiresIn(res.data.expiresIn);
+      if (timeRemaining <= 60000) {  // If less than 60 seconds before expiration, refresh token
+        refreshAccessToken();
+      }
+    }, 60000);  // Check every minute
 
-        // Log the new access token and expiry time after refresh
-        console.log('New Access Token:', res.data.accessToken);
-        console.log('New Expires In:', res.data.expiresIn);
-      }).catch(err => {
-        console.error('Error refreshing token', err);
-        window.location = '/';
-      })
-    }, (expiresIn - 60) * 1000)
-
-    return () => clearInterval(interval);
-  }, [refreshToken, expiresIn])
-
+    return () => clearInterval(interval);  // Cleanup on component unmount
+  }, [refreshToken, expiresIn]);
 
   return accessToken;
 }

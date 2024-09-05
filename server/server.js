@@ -75,8 +75,8 @@ app.get('/api/search', async (req, res) => {
     const response = await spotifyApi.searchTracks(term, { offset, limit });
     res.json(response.body);
   } catch (error) {
-    console.error('Error searching Spotify tracks:', error);
-    res.status(500).json({ error: 'Failed to search tracks' });
+    console.error('Error searching Spotify tracks:', error);  // Log the detailed error
+    res.status(500).json({ error: error.message || 'Failed to search tracks' });
   }
 });
 

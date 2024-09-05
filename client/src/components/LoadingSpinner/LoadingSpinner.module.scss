@@ -5,16 +5,53 @@
   height: 100vh; /* Full viewport height */
 }
 
-.spinner {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-}
+// .spinner {
+//   border: 16px solid #f3f3f3; /* Light grey */
+//   border-top: 16px solid #3498db; /* Blue */
+//   border-radius: 50%;
+//   width: 120px;
+//   height: 120px;
+//   animation: spin 2s linear infinite;
+// }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+// @keyframes spin {
+//   0% { transform: rotate(0deg); }
+//   100% { transform: rotate(360deg); }
+// }
+
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 90px;
+  height: 24px;
+  padding: 2px 0;
+  box-sizing: border-box;
+  display: flex;
+  animation: l5-0 3s infinite steps(6);
+  background:
+    linear-gradient(#FF6EC7 0 0) 0 0/0% 100% no-repeat,
+    radial-gradient(circle 3px,#eeee89 90%,#00CCFF) 0 0/20% 100%
+    #000;
+  overflow: hidden;
+}
+.loader::before {
+  content: "";
+  width: 20px;
+  transform: translate(-100%);
+  border-radius: 50%;
+  background: #FFFF33;
+  animation:
+    l5-1 .25s .153s infinite steps(5) alternate,
+    l5-2  3s        infinite linear;
+}
+@keyframes l5-1{
+    0% {clip-path: polygon(50% 50%,100%   0,100% 0,0 0,0 100%,100% 100%,100% 100%)}
+  100% {clip-path: polygon(50% 50%,100% 65%,100% 0,0 0,0 100%,100% 100%,100%  35%)}
+}
+@keyframes l5-2{
+  100% {transform: translate(90px)}
+}
+@keyframes l5-0{
+  100% {background-size:120% 100%,20% 100%}
 }

@@ -251,8 +251,10 @@ function App({accessToken}) {
         }
 
         // Clear access tokens and any other session data
-        window.localStorage.removeItem('spotify_access_token');
-        window.sessionStorage.removeItem('spotify_access_token');
+        window.localStorage.removeItem('accessToken');
+        window.sessionStorage.removeItem('accessToken');
+        window.localStorage.removeItem('refreshToken');
+        window.sessionStorage.removeItem('refreshToken');
 
         // Clear application state
         setTracks([]);
@@ -283,7 +285,7 @@ function App({accessToken}) {
   console.log('isPremium: ', isPremium);
 
   return (
-    <div className="screen flex flex-col h-screen md:overflow-hidden l-sm:overflow-auto">
+    <div className="screen flex flex-col h-screen md:overflow-hidden l-sm:overflow-auto bg-electric-blue">
       <header className="p-4 bg-hot-magenta text-white text-center">
         <h1 className="text-5xl md:text-7xl lg:text-8xl">WALKIFY</h1>
         <button onClick={handleLogout} className="rounded-full bg-neon-green px-4 py-1 mt-6 hover:bg-lime-green transition-colors duration-300 text-base font-bold">

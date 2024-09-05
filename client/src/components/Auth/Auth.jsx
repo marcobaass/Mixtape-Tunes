@@ -7,7 +7,7 @@ import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 export default function Auth() {
   const code = new URLSearchParams(window.location.search).get('code');
   const [isLoading, setLoading] = useState(!!code);
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('spotify_access_token'));
 
   const fetchedAccessToken = useAuth(code, setLoading);
 
@@ -26,7 +26,7 @@ export default function Auth() {
   if (accessToken) {
     return <App accessToken={accessToken} />;
   }
-  
+
   if (isLoading) {
     return (
       <div className="flex flex-1 h-screen justify-center items-center">
