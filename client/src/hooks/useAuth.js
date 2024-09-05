@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001';
+// const API_URL = 'http://localhost:3001';
+const apiUrl = import.meta.env.VITE_API_URL
 
 export default function useAuth(code, setLoading) {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
@@ -79,5 +80,5 @@ export default function useAuth(code, setLoading) {
     return () => clearInterval(interval);  // Cleanup on component unmount
   }, [refreshToken, expiresIn]);
 
-  return { accessToken, loginRef }; 
+  return { accessToken, loginRef };
 }
