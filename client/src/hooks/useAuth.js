@@ -11,8 +11,10 @@ export default function useAuth(code, setLoading) {
 
   useEffect(() => {
     // Only attempt login when code is present (initial login)
+    console.log('Initial login code: ', code);
     if (code && !accessToken && !loginRef.current) {
       console.log('Attempting login with code...');
+      loginRef.current = true;
       const login = async () => {
         try {
           setLoading(true);
@@ -77,5 +79,5 @@ export default function useAuth(code, setLoading) {
     return () => clearInterval(interval);  // Cleanup on component unmount
   }, [refreshToken, expiresIn]);
 
-  return accessToken;
+  return { accessToken, loginRef }; 
 }

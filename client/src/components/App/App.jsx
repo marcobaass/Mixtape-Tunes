@@ -10,7 +10,8 @@ import { useLoading } from '../../context/LoadingContext';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 
-function App({accessToken}) {
+
+function App({accessToken, loginRef}) {
 
   useEffect(() => {
     console.log('App component rendered with access token:', accessToken);
@@ -267,6 +268,7 @@ function App({accessToken}) {
         setIsPlaying(false);
         setRecommendedTracks([]);
         setLoading(false);
+        loginRef.current = false;
         // Redirect to your app's login or homepage
         window.location.href = '/login';
       }, 1000);

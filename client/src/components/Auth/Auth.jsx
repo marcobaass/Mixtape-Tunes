@@ -9,7 +9,7 @@ export default function Auth() {
   const [isLoading, setLoading] = useState(!!code);
   const [accessToken, setAccessToken] = useState(localStorage.getItem('spotify_access_token'));
 
-  const fetchedAccessToken = useAuth(code, setLoading);
+  const { accessToken: fetchedAccessToken, loginRef } = useAuth(code, setLoading);  // Extract loginRef from useAuth
 
   useEffect(() => {
     if (fetchedAccessToken && !accessToken) {
@@ -24,7 +24,7 @@ export default function Auth() {
 
   // Show the loading spinner while loading
   if (accessToken) {
-    return <App accessToken={accessToken} />;
+    return <App accessToken={accessToken} loginRef={loginRef}/>;
   }
 
   if (isLoading) {
