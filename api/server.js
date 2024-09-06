@@ -34,6 +34,7 @@ app.post('/refresh', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+  console.log('received login request with code:', code);
   const code = req.body.code;
 
   spotifyApi.authorizationCodeGrant(code)
