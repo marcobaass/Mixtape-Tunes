@@ -15,7 +15,7 @@ const spotifyApi = new SpotifyWebApi({
   redirectUri: process.env.SPOTIFY_REDIRECT_URI,
 });
 
-app.post('/refresh', (req, res) => {
+app.post('/api/refresh', (req, res) => {
   const refreshToken = req.body.refreshToken;
 
   spotifyApi.setRefreshToken(refreshToken); // Set the refresh token
@@ -33,7 +33,7 @@ app.post('/refresh', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
   console.log('received login request with code:', code);
   const code = req.body.code;
 
