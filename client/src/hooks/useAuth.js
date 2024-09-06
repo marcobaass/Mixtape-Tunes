@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 // const API_URL = 'http://localhost:3001';
-const apiUrl = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function useAuth(code, setLoading) {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
