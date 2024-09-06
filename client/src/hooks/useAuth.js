@@ -17,10 +17,14 @@ export default function useAuth(code, setLoading) {
       console.log('Attempting login with code...');
       loginRef.current = true;
       const login = async () => {
+        console.log('sending Login Request to server');
+
         try {
           setLoading(true);
           const response = await axios.post(`${API_URL}/login`, { code });
+          console.log('Login response:', response.data);
           const { accessToken, refreshToken, expiresIn } = response.data;
+          console.log('Access token:', accessToken);
 
           setAccessToken(accessToken);
           setRefreshToken(refreshToken);
