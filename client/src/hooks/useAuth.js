@@ -22,6 +22,7 @@ export default function useAuth(code, setLoading) {
 
         try {
           setLoading(true);
+          console.log('Authorization code:', code);
           const response = await axios.post(`${API_URL}/login`, { code });
           console.log('Login response:', response.data);
           const { accessToken, refreshToken, expiresIn } = response.data;
