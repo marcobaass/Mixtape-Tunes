@@ -271,7 +271,7 @@ function App({accessToken, loginRef}) {
         setLoading(false);
         loginRef.current = false;
         // Redirect to your app's login or homepage
-        window.location.href = '/login';
+        window.location.href = '/';
       }, 1000);
     } else {
       // Handle the case where the popup could not be opened
