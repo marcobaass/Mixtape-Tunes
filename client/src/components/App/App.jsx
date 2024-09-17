@@ -32,7 +32,7 @@ function App({accessToken, loginRef}) {
   const [recommendationOffset, setRecommendationOffset] = useState(0);
   const [totalRecommendations, setTotalRecommendations] = useState(0);
 
-  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
+  const [setAccessToken] = useState(localStorage.getItem('accessToken') || null);
   const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || null);
   const [expiresIn, setExpiresIn] = useState(localStorage.getItem('expiresIn') || null);
 
