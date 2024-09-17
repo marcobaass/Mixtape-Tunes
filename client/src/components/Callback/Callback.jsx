@@ -5,6 +5,7 @@ import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 export default function Callback({ setAccessToken }) {
   const code = new URLSearchParams(window.location.search).get('code');
+  console.log('Callback code: ', code)
   const [isLoading, setLoading] = useState(true);
   const { accessToken, loginRef } = useAuth(code, setLoading);
   const navigate = useNavigate();
