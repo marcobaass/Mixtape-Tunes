@@ -8,6 +8,9 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 export const handler = async (event) => {
+  console.log('SPOTIFY_CLIENT_ID:', process.env.SPOTIFY_CLIENT_ID); // Log for debugging
+  console.log('SPOTIFY_REDIRECT_URI:', process.env.SPOTIFY_REDIRECT_URI); // Log for debugging
+
   const { code } = JSON.parse(event.body);
 
   try {
@@ -22,6 +25,7 @@ export const handler = async (event) => {
     };
   } catch (err) {
     console.error(err);
+    console.error('Spotify authorization error:', err); // Log error for debugging
     return {
       statusCode: 400,
       body: JSON.stringify({ error: 'Failed to authenticate user' }),
