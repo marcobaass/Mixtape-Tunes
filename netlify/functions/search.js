@@ -11,10 +11,16 @@ export const handler = async (event) => {
   const { term, offset = 0, limit = 20 } = event.queryStringParameters;
   const token = event.headers.authorization.split(' ')[1];
 
+  console.log('Search Term:', term);
+  console.log('Offset:', offset);
+  console.log('Limit:', limit);
+  console.log('Access Token:', token);
+
   spotifyApi.setAccessToken(token);
 
   try {
     const response = await spotifyApi.searchTracks(term, { offset, limit });
+    console.log('Spotify Search Response:', response);
     return {
       statusCode: 200,
       body: JSON.stringify(response.body),
