@@ -257,6 +257,7 @@ function App({accessToken, loginRef}) {
         }
 
         // Clear access tokens and any other session data
+        // xyz
         window.localStorage.removeItem('accessToken');
         console.log('Access token after wipe 1', accessToken);
         window.localStorage.removeItem('refreshToken');
