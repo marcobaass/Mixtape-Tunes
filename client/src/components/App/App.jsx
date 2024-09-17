@@ -254,8 +254,10 @@ function App({accessToken, loginRef}) {
 
         // Clear access tokens and any other session data
         window.localStorage.removeItem('accessToken');
-        window.sessionStorage.removeItem('accessToken');
         window.localStorage.removeItem('refreshToken');
+        window.localStorage.removeItem('expiresIn');
+
+        window.sessionStorage.removeItem('accessToken');
         window.sessionStorage.removeItem('refreshToken');
 
         // Clear application state
@@ -271,7 +273,8 @@ function App({accessToken, loginRef}) {
         setLoading(false);
         loginRef.current = false;
         // Redirect to your app's login or homepage
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        navigate('/login');
       }, 1000);
     } else {
       // Handle the case where the popup could not be opened
