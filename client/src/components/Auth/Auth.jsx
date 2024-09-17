@@ -4,6 +4,7 @@ import Login from '../Login/Login';
 import App from '../App/App';
 import useAuth from '../../hooks/useAuth';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import Callback from '../Callback/Callback';
 
 export default function Auth() {
   const code = new URLSearchParams(window.location.search).get('code');
@@ -41,6 +42,7 @@ export default function Auth() {
 
   return (
     <Routes>
+      <Route path="/callback" element={<Callback setAccessToken={setAccessToken} />} />
       <Route path="/" element={accessToken ? <App accessToken={accessToken} loginRef={loginRef} /> : <Login />} />
     </Routes>
   );
