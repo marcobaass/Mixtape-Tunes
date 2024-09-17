@@ -269,8 +269,6 @@ function App({accessToken, loginRef}) {
         setRefreshToken(null);
         setExpiresIn(null);
 
-        localStorage.clear();
-
         console.log('Access token after wipe', accessToken);
 
         // Clear application state
@@ -288,7 +286,7 @@ function App({accessToken, loginRef}) {
         // Redirect to your app's login or homepage
         // window.location.href = '/login';
         navigate('/login');
-      }, 1000);
+      }, 2000);
     } else {
       // Handle the case where the popup could not be opened
       console.error('Popup could not be opened');
