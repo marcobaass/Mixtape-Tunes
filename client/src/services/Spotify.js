@@ -171,6 +171,13 @@ const Spotify = {
         },
       });
 
+      console.log('Search response:', response); // Log the response
+
+      if (!response.ok) {
+        console.error('Error response from search:', await response.text()); // Log error body
+        return { tracks: [], total: 0 };
+      }
+
       const data = await response.json();
 
       if (!data.tracks) {
