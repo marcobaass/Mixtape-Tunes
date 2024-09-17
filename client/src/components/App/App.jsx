@@ -286,7 +286,7 @@ function App({accessToken, loginRef}) {
         // Redirect to your app's login or homepage
         // window.location.href = '/login';
         navigate('/login');
-      }, 2000);
+      }, 5000);
     } else {
       // Handle the case where the popup could not be opened
       console.error('Popup could not be opened');
