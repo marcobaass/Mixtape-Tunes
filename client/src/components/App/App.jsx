@@ -32,6 +32,10 @@ function App({accessToken, loginRef}) {
   const [recommendationOffset, setRecommendationOffset] = useState(0);
   const [totalRecommendations, setTotalRecommendations] = useState(0);
 
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
+  const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || null);
+  const [expiresIn, setExpiresIn] = useState(localStorage.getItem('expiresIn') || null);
+
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -261,6 +265,10 @@ function App({accessToken, loginRef}) {
         window.sessionStorage.removeItem('refreshToken');
 
         console.log('Access token after wipe', accessToken);
+
+        setAccessToken(null);  // This ensures the state is reset
+        setRefreshToken(null);
+        setExpiresIn(null);
 
         // Clear application state
         setTracks([]);
