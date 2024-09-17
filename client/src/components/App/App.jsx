@@ -264,12 +264,13 @@ function App({accessToken, loginRef}) {
         window.sessionStorage.removeItem('accessToken');
         window.sessionStorage.removeItem('refreshToken');
 
-        console.log('Access token after wipe', accessToken);
 
         setAccessToken(null);  // This ensures the state is reset
         setRefreshToken(null);
         setExpiresIn(null);
 
+        console.log('Access token after wipe', accessToken);
+        
         // Clear application state
         setTracks([]);
         setQuery("");
