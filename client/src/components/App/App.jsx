@@ -157,6 +157,7 @@ function App({accessToken, loginRef}) {
     e.preventDefault();
     setSuggestions([]);
     setRecommendedTracks([]);
+    console.log('Searchtext', text);
     setQuery(text);
     handleSearch(text, true);
   };
