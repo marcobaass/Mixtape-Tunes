@@ -258,18 +258,20 @@ function App({accessToken, loginRef}) {
 
         // Clear access tokens and any other session data
         window.localStorage.removeItem('accessToken');
+        console.log('Access token after wipe 1', accessToken);
         window.localStorage.removeItem('refreshToken');
         window.localStorage.removeItem('expiresIn');
 
         window.sessionStorage.removeItem('accessToken');
+        console.log('Access token after wipe 2', accessToken);
         window.sessionStorage.removeItem('refreshToken');
 
 
         setAccessToken(null);  // This ensures the state is reset
+        console.log('Access token after wipe 3', accessToken);
         setRefreshToken(null);
         setExpiresIn(null);
 
-        console.log('Access token after wipe', accessToken);
 
         // Clear application state
         setTracks([]);
@@ -286,7 +288,7 @@ function App({accessToken, loginRef}) {
         // Redirect to your app's login or homepage
         // window.location.href = '/login';
         navigate('/login');
-      }, 5000);
+      }, 2000);
     } else {
       // Handle the case where the popup could not be opened
       console.error('Popup could not be opened');
