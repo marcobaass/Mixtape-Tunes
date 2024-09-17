@@ -257,7 +257,7 @@ function App({accessToken, loginRef}) {
         }
 
         // Clear access tokens and any other session data
-        localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('refreshToken');
         window.localStorage.removeItem('expiresIn');
 
@@ -268,6 +268,8 @@ function App({accessToken, loginRef}) {
         setAccessToken(null);  // This ensures the state is reset
         setRefreshToken(null);
         setExpiresIn(null);
+
+        localStorage.clear();
 
         console.log('Access token after wipe', accessToken);
 
