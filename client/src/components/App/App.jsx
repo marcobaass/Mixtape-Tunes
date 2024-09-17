@@ -260,6 +260,8 @@ function App({accessToken, loginRef}) {
         window.sessionStorage.removeItem('accessToken');
         window.sessionStorage.removeItem('refreshToken');
 
+        console.log('Access token after wipe', accessToken);
+
         // Clear application state
         setTracks([]);
         setQuery("");
