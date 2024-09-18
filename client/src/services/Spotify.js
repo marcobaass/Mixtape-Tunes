@@ -165,7 +165,7 @@ const Spotify = {
 
   async search(term, offset = 0, limit = 20, accessToken) {
     try {
-      const response = await fetch(`${API_URL}/api/search?term=${encodeURIComponent(term)}&offset=${offset}&limit=${limit}`, {
+      const response = await fetch(`${API_URL}/search?term=${encodeURIComponent(term)}&offset=${offset}&limit=${limit}`, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,  // Include the access token
         },
