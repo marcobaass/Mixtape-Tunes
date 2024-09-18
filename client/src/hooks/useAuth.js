@@ -27,6 +27,8 @@ export default function useAuth(code, setLoading) {
           console.log('Login response:', response.data);
           const { accessToken, refreshToken, expiresIn } = response.data;
           console.log('Access token:', accessToken);
+          console.log('Refresh token:', refreshToken);
+          console.log('Expiration:', expiresIn);
 
           setAccessToken(accessToken);
           setRefreshToken(refreshToken);
@@ -51,7 +53,7 @@ export default function useAuth(code, setLoading) {
   // Refresh token logic (this runs independently of the code logic)
   useEffect(() => {
     console.log('Refreshing in useAuth...')
-    console.log(refreshToken, expiresIn)
+    console.log('Refresh Token: ', refreshToken, 'Expiration: ', expiresIn)
 
     if (!refreshToken || !expiresIn) return;
 
