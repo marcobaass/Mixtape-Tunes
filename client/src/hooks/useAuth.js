@@ -51,6 +51,7 @@ export default function useAuth(code, setLoading) {
   // Refresh token logic (this runs independently of the code logic)
   useEffect(() => {
     console.log('Refreshing in useAuth...')
+    console.log(refreshToken, expiresIn)
 
     if (!refreshToken || !expiresIn) return;
 
