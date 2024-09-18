@@ -52,13 +52,18 @@ export default function useAuth(code, setLoading) {
 
   // Refresh token logic (this runs independently of the code logic)
   useEffect(() => {
-    console.log('Refreshing in useAuth...')
-    console.log('Refresh Token: ', refreshToken, 'Expiration: ', expiresIn)
 
-    if (!refreshToken || !expiresIn) return;
+    if (!refreshToken || !expiresIn) {
+      console.log('Missing refreshToken or expiresIn, cannot refresh');
+      return;
+    }
+
+    console.log('Setting up refresh with expiresIn:', expiresIn);
 
     const refreshAccessToken = async () => {
       try {
+        console.log('Refreshing access token in useAuth...');
+        console.log('Refresh Token: ', refreshToken, 'Expiration: ', expiresIn)
         const response = await axios.post(`${API_URL}/refresh`, { refreshToken });
         const { accessToken, expiresIn } = response.data;
 
@@ -82,6 +87,8 @@ export default function useAuth(code, setLoading) {
     // Set up an interval to check token expiration every 60 seconds
     const interval = setInterval(() => {
       const timeRemaining = expirationTime - Date.now(); // Calculate remaining time
+
+      console.log('Time remaining until token expiration:', timeRemaining);
 
       if (timeRemaining <= 60000) {  // If less than 60 seconds before expiration, refresh token
         refreshAccessToken();
