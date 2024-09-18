@@ -256,6 +256,7 @@ function App({accessToken, loginRef}) {
         // xyz
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('spotify_access_token');
+        localStorage.clear();
         console.log('Access token after wipe 1', accessToken);
         window.localStorage.removeItem('refreshToken');
         window.localStorage.removeItem('expiresIn');
