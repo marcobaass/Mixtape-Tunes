@@ -32,10 +32,6 @@ function App({accessToken, loginRef}) {
   const [recommendationOffset, setRecommendationOffset] = useState(0);
   const [totalRecommendations, setTotalRecommendations] = useState(0);
 
-  const [setAccessToken] = useState(localStorage.getItem('accessToken') || null);
-  const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || null);
-  const [expiresIn, setExpiresIn] = useState(localStorage.getItem('expiresIn') || null);
-
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -259,6 +255,7 @@ function App({accessToken, loginRef}) {
         // Clear access tokens and any other session data
         // xyz
         window.localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('spotify_access_token');
         console.log('Access token after wipe 1', accessToken);
         window.localStorage.removeItem('refreshToken');
         window.localStorage.removeItem('expiresIn');
@@ -266,13 +263,6 @@ function App({accessToken, loginRef}) {
         window.sessionStorage.removeItem('accessToken');
         console.log('Access token after wipe 2', accessToken);
         window.sessionStorage.removeItem('refreshToken');
-
-
-        setAccessToken(null);  // This ensures the state is reset
-        console.log('Access token after wipe 3', accessToken);
-        setRefreshToken(null);
-        setExpiresIn(null);
-
 
         // Clear application state
         setTracks([]);
