@@ -8,7 +8,9 @@ const API_URL = '/.netlify/functions';
 export default function useAuth(code, setLoading) {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
   const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || null);
-  const [expiresIn, setExpiresIn] = useState(localStorage.getItem('expiresIn') || null);
+  // const [expiresIn, setExpiresIn] = useState(localStorage.getItem('expiresIn') || null);
+  const [expiresIn, setExpiresIn] = useState(parseInt(localStorage.getItem('expiresIn'), 10) || null);
+  const [expirationTime, setExpirationTime] = useState(() => Date.now() + (expiresIn ? expiresIn * 1000 : 0)); // setting expiration time
   const loginRef = useRef(false);
 
   useEffect(() => {
@@ -71,14 +73,19 @@ export default function useAuth(code, setLoading) {
         console.log(`${API_URL}/refresh`, { refreshToken });
         const response = await axios.post(`${API_URL}/refresh`, { refreshToken });
         const { accessToken, expiresIn } = response.data;
-        console.log('Expiration: ', expiresIn);
+        console.log('New access token:', accessToken);
+        console.log('New expiration:', expiresIn);
 
         setAccessToken(accessToken);
         setExpiresIn(expiresIn);
 
         // Update localStorage
         localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('expiresIn', expiresIn);
+        // localStorage.setItem('expiresIn', expiresIn);
+        localStorage.setItem('expiresIn', expiresIn.toString());
+
+        // Update expiration time
+        setExpirationTime(Date.now() + expiresIn * 1000);
 
         console.log('Access token refreshed');
       } catch (error) {
@@ -88,7 +95,7 @@ export default function useAuth(code, setLoading) {
     };
 
     // Calculate the expiration time (in milliseconds)
-    const expirationTime = Date.now() + expiresIn * 1000;  // Calculate when the token expires
+    // const expirationTime = Date.now() + expiresIn * 1000;  // Calculate when the token expires
 
     // Set up an interval to check token expiration every 60 seconds
     const interval = setInterval(() => {
@@ -102,7 +109,7 @@ export default function useAuth(code, setLoading) {
     }, 6000);  // Check every minute
 
     return () => clearInterval(interval);  // Cleanup on component unmount
-  }, [refreshToken, expiresIn]);
+  }, [refreshToken, expiresIn, expirationTime]);
 
   return { accessToken, loginRef };
 }
