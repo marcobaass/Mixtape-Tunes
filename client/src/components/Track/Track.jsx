@@ -20,7 +20,7 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
     const rndBgImg = bgImages[rndIndex];
 
     return {
-      backgroundImage: `url('src/assets/imgs/${rndBgImg}.png')`,
+      backgroundImage: `url('/imgs/${rndBgImg}.png')`,
     };
   }, [])
 
