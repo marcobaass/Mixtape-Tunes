@@ -90,7 +90,7 @@ export default function useAuth(code, setLoading) {
 
       console.log('Time remaining until token expiration:', timeRemaining);
 
-      if (timeRemaining <= 60000) {  // If less than 60 seconds before expiration, refresh token
+      if (timeRemaining <= 350000) {  // If less than 60 seconds before expiration, refresh token
         refreshAccessToken();
       }
     }, 60000);  // Check every minute
