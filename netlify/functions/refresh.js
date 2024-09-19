@@ -8,6 +8,7 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 export const handler = async (event) => {
+  
   console.log('refresh function gets called ...');
 
   const { refreshToken } = JSON.parse(event.body);

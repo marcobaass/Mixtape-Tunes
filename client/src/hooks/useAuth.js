@@ -63,8 +63,8 @@ export default function useAuth(code, setLoading) {
     const refreshAccessToken = async () => {
       try {
         console.log('Refreshing access token in useAuth...');
-        console.log('no message? refresh in useAuth...');
-        console.log('Refresh Token: ', refreshToken, 'Expiration: ', expiresIn);
+        console.log('Refresh Token: ', refreshToken);
+        console.log('Expiration: ', expiresIn);
         const response = await axios.post(`${API_URL}/refresh`, { refreshToken });
         const { accessToken, expiresIn } = response.data;
 
@@ -94,7 +94,7 @@ export default function useAuth(code, setLoading) {
       if (timeRemaining <= 3550000) {  // If less than 60 seconds before expiration, refresh token
         refreshAccessToken();
       }
-    }, 60000);  // Check every minute
+    }, 6000);  // Check every minute
 
     return () => clearInterval(interval);  // Cleanup on component unmount
   }, [refreshToken, expiresIn]);
