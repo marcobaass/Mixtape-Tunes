@@ -63,7 +63,8 @@ export default function useAuth(code, setLoading) {
     const refreshAccessToken = async () => {
       try {
         console.log('Refreshing access token in useAuth...');
-        console.log('Refresh Token: ', refreshToken, 'Expiration: ', expiresIn)
+        console.log('no message? refresh in useAuth...');
+        console.log('Refresh Token: ', refreshToken, 'Expiration: ', expiresIn);
         const response = await axios.post(`${API_URL}/refresh`, { refreshToken });
         const { accessToken, expiresIn } = response.data;
 
