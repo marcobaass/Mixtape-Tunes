@@ -77,7 +77,7 @@ export default function useAuth(code, setLoading) {
         console.log('Access token refreshed');
       } catch (error) {
         console.error('Error refreshing token:', error);
-        window.location = '/';  // Redirect to login if refresh fails
+        // window.location = '/';  // Redirect to login if refresh fails
       }
     };
 
