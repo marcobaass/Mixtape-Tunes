@@ -39,6 +39,9 @@ export default function useAuth(code, setLoading) {
           localStorage.setItem('refreshToken', refreshToken);
           localStorage.setItem('expiresIn', expiresIn);
 
+          const storedExpiresIn = localStorage.getItem('expiresIn');  // Retrieving
+          console.log('Stored expiresIn:', storedExpiresIn);
+
           window.history.replaceState({}, null, '/');  // Remove the code from the URL
         } catch (error) {
           console.error('Error during login:', error);
@@ -52,6 +55,7 @@ export default function useAuth(code, setLoading) {
 
   // Refresh token logic (this runs independently of the code logic)
   useEffect(() => {
+    console.log('Initial values - refreshToken:', refreshToken, 'expiresIn:', expiresIn);
 
     if (!refreshToken || !expiresIn) {
       console.log('Missing refreshToken or expiresIn, cannot refresh');
