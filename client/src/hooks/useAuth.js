@@ -103,10 +103,10 @@ export default function useAuth(code, setLoading) {
 
       console.log('Time remaining until token expiration:', timeRemaining);
 
-      if (timeRemaining <= 3550000) {  // If less than 60 seconds before expiration, refresh token
+      if (timeRemaining <= 60000) {  // If less than 60 seconds before expiration, refresh token
         refreshAccessToken();
       }
-    }, 6000);  // Check every minute
+    }, 60000);  // Check every minute
 
     return () => clearInterval(interval);  // Cleanup on component unmount
   }, [refreshToken, expiresIn, expirationTime]);
