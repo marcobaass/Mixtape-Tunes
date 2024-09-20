@@ -33,7 +33,7 @@ export default function Playlist({ playlistTracks, handleRemoveFromPlaylist, pla
         )
       }
 
-      <div className="overflow-y-auto max-h-[40vh] -space-y-1">
+      <div className="overflow-y-auto max-h-[29vh] -space-y-1">
         <div className="-space-y-1" >
           {playlistTracks.map((track, index) => (
             <div
