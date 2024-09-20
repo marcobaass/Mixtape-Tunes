@@ -9,7 +9,7 @@ export default function Login() {
   return (
     <div className="flex flex-1 h-screen justify-evenly items-center flex-wrap bg-vivid-yellow">
       <div>
-        <h1 className="text-neon-purple text-5xl md:text-7xl lg:text-8xl">WALKIFY</h1>
+        <h1 className="text-neon-purple text-5xl md:text-7xl lg:text-8xl">MixtapeTunes</h1>
         <button className={`${styles.loginButton} text-white bg-neon-pink rounded-2xl px-3 py-0.5 h-min mt-2 hover:bg-neon-purple transition-colors duration-300 text-sm font-bold`}>
               <a href={AUTH_URL} >Login With Spotify</a>
             </button>
