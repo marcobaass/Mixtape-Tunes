@@ -194,6 +194,7 @@ const Spotify = {
         uri: track.uri,
         image: track.album.images[0]?.url,
         preview_url: track.preview_url,
+        external_url: track.external_urls.spotify,
       }));
 
       return {

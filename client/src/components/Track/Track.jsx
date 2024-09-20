@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import styles from './Track.module.scss';
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 
 export default function Track({ track, handleAddToPlaylist, handlePlay, isPlaying, currentTrack, isPremium }) {
 
@@ -38,12 +39,13 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
       <h2 className={`${styles.gridSong} text-black truncate w-full max-w-[95%] text-center`}>{track.name || 'Song Title'}</h2>
       <h2 className={`${styles.gridAlbum} text-white truncate w-full max-w-[95%] text-center`}>{track.album || 'Album Title'}</h2>
 
-      <img
-        className={`${styles.gridSpot} object-cover rounded-xl p-2`}
-        src="/imgs/Spotify_Primary_Logo_RGB_Green.png"
-        alt="Link to Spotify"
-      />
-
+      <Link to={`${track.external_url}`}>
+        <img
+          className={`${styles.gridSpot} object-cover rounded-xl p-2`}
+          src="/imgs/Spotify_Primary_Logo_RGB_Green.png"
+          alt="Link to Spotify"
+        />
+      </Link>
 
       {/* Playbutton */}
       <div className={`${styles.gridPlay} relative  group`}>
