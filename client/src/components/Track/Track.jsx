@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import styles from './Track.module.scss';
 import PropTypes from 'prop-types';
 
 export default function Track({ track, handleAddToPlaylist, handlePlay, isPlaying, currentTrack, isPremium }) {
+  const [isHovered, setIsHovered] = useState(false);
 
   const isCurrentTrackPlaying = currentTrack && currentTrack.uri === track.uri && isPlaying;
   const tapeStyle = useMemo(() => {
@@ -24,6 +25,14 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
     };
   }, [])
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   return (
     <div className={`${styles.tape} m-1 rounded-lg max-w-[23rem] min-w-[17rem] l-md:min-w-[13rem] flex-1`} style={tapeStyle}>
 
@@ -38,9 +47,16 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
       <h2 className={`${styles.gridSong} text-black truncate w-full max-w-[95%] text-center`}>{track.name || 'Song Title'}</h2>
       <h2 className={`${styles.gridAlbum} text-white truncate w-full max-w-[95%] text-center`}>{track.album || 'Album Title'}</h2>
 
-      <a href={track.external_url} target="_blank" rel="noopener noreferrer" className={`${styles.gridSpot} inline-block`}>
+      <a
+        href={track.external_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${styles.gridSpot} inline-block`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <img
-          src="/imgs/Spotify_Primary_Logo_RGB_Green.png"
+          src={isHovered ? "/Spotify_Primary_Logo_RGB_Black.png" : "/imgs/Spotify_Primary_Logo_RGB_Green.png"}
           alt="Link to Spotify"
           className="w-full h-full object-contain"
         />
