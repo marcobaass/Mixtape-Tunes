@@ -48,19 +48,24 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
       <h2 className={`${styles.gridAlbum} text-white truncate w-full max-w-[95%] text-center`}>{track.album || 'Album Title'}</h2>
 
       <a
-        href={track.external_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${styles.gridSpot} inline-block`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <img
-          src={isHovered ? "/Spotify_Primary_Logo_RGB_Black.png" : "/imgs/Spotify_Primary_Logo_RGB_Green.png"}
-          alt="Link to Spotify"
-          className="w-full h-full object-contain"
-        />
-      </a>
+      href={track.external_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${styles.gridSpot} relative inline-block`} // Ensure relative positioning for layering images
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <img
+        src="/imgs/Spotify_Primary_Logo_RGB_Green.png"
+        alt="Spotify Logo"
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${isHovered ? 'opacity-0' : 'opacity-100'}`}
+      />
+      <img
+        src="/Spotify_Primary_Logo_RGB_Black.png"
+        alt="Spotify Hover Logo"
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+      />
+    </a>
 
       {/* Playbutton */}
       <div className={`${styles.gridPlay} relative  group`}>
