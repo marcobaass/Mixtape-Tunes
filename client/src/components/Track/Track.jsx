@@ -43,7 +43,7 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
         <img
           src="/imgs/Spotify_Primary_Logo_RGB_Green.png"
           alt="Link to Spotify"
-          className="w-[50px] h-[50px] object-cover"
+          className="w-full h-full object-contain"
         />
       </Link>
 
