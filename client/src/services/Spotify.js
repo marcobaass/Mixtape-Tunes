@@ -179,7 +179,7 @@ const Spotify = {
       }
 
       const data = await response.json();
-      console.log('Search response JSON:', response); // Log the response
+      console.log('Search response JSON:', data); // Log the response
 
 
       if (!data.tracks) {
