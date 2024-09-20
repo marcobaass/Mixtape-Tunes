@@ -39,11 +39,11 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
       <h2 className={`${styles.gridSong} text-black truncate w-full max-w-[95%] text-center`}>{track.name || 'Song Title'}</h2>
       <h2 className={`${styles.gridAlbum} text-white truncate w-full max-w-[95%] text-center`}>{track.album || 'Album Title'}</h2>
 
-      <Link to={`${track.external_url}`} className={`${styles.gridSpot}`}>
+      <Link to={`${track.external_url}`} className={`${styles.gridSpot}`} style={{ display: 'contents' }}>
         <img
           src="/imgs/Spotify_Primary_Logo_RGB_Green.png"
           alt="Link to Spotify"
-          className="w-full h-full object-cover"
+          className="w-[50px] h-[50px] object-cover"
         />
       </Link>
 
