@@ -58,12 +58,12 @@ export default function Track({ track, handleAddToPlaylist, handlePlay, isPlayin
       <img
         src="/imgs/Spotify_Primary_Logo_RGB_Green.png"
         alt="Spotify Logo"
-        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${isHovered ? 'opacity-0' : 'opacity-100'}`}
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${isHovered ? 'opacity-0' : 'opacity-100'}`}
       />
       <img
-        src="/Spotify_Primary_Logo_RGB_Black.png"
+        src="/imgs/Spotify_Primary_Logo_RGB_Black.png"
         alt="Spotify Hover Logo"
-        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
       />
     </a>
 
