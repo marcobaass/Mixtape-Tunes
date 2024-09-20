@@ -5,9 +5,9 @@
   grid-template-rows: 6% 7.5% 7.5% 2.5% 45%;
   grid-template-columns: 4.5% 16.5% 58% 16.5%;
   grid-template-areas: ". . . ."
-                       ". img artist ."
-                       ". img song ."
-                       ". img . ."
+                       ". img artist spot"
+                       ". img song spot"
+                       ". img . spot"
                        ". play album add";
 
 }
@@ -41,6 +41,12 @@
 
 .gridAdd {
   grid-area: add;
+  justify-self: center;
+  align-self: center;
+}
+
+.gridSpot {
+  grid-area: spot;
   justify-self: center;
   align-self: center;
 }
