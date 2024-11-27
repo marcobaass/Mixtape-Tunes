@@ -64,6 +64,19 @@ function App({accessToken, loginRef}) {
         console.error("Error checking subscription level:", error);
         setIsPremium(false);
         loginRef.current = false;
+
+        window.localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('spotify_access_token');
+        localStorage.clear();
+        window.location.reload(true);
+        console.log('Access token after wipe 1', accessToken);
+        window.localStorage.removeItem('refreshToken');
+        window.localStorage.removeItem('expiresIn');
+
+        window.sessionStorage.removeItem('accessToken');
+        console.log('Access token after wipe 2', accessToken);
+        window.sessionStorage.removeItem('refreshToken');
+
         console.log('Navigating to login page...');
         navigate('/login');
       } finally {
