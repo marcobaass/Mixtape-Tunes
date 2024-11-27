@@ -62,6 +62,7 @@ function App({accessToken, loginRef}) {
         console.error("Error checking subscription level:", error);
         setIsPremium(false);
         loginRef.current = false;
+        console.log('Navigating to login page...');
         navigate('/login');
       } finally {
         setLoading(false); // Set loading to false
