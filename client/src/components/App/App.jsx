@@ -11,6 +11,7 @@ import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 
 
+
 function App({accessToken, loginRef}) {
 
   useEffect(() => {
@@ -60,6 +61,8 @@ function App({accessToken, loginRef}) {
       } catch (error) {
         console.error("Error checking subscription level:", error);
         setIsPremium(false);
+        loginRef.current = false;
+        navigate('/login');
       } finally {
         setLoading(false); // Set loading to false
       }
