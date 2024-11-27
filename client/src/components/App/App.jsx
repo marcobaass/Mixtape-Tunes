@@ -9,10 +9,12 @@ import Spotify from '../../services/Spotify';
 import { useLoading } from '../../context/LoadingContext';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
-
+import { useNavigate } from 'react-router-dom';
 
 
 function App({accessToken, loginRef}) {
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('App component rendered with access token:', accessToken);

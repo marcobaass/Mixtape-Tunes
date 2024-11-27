@@ -44,6 +44,7 @@ export default function Auth() {
     <Routes>
       <Route path="/callback" element={<Callback setAccessToken={setAccessToken} />} />
       <Route path="/" element={accessToken ? <App accessToken={accessToken} loginRef={loginRef} /> : <Login />} />
+      <Route path="/login" element={<Login />} />
     </Routes>
   );
 }
