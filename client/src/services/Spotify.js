@@ -223,10 +223,13 @@ const Spotify = {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`Error fetching suggestions: ${response.status} ${response.statusText}`);
+        const errorResponse = await response.json();
+        console.error('Error response:', errorResponse);
+
+        // Explicitly throw the error so it propagates to the caller
+        throw new Error(`${errorResponse.error.status} ${errorResponse.error.message}`);
       }
+
 
       const data = await response.json();
       console.log('Received data:', data);
