@@ -237,7 +237,7 @@ const Spotify = {
       return [...trackSuggestions, ...artistSuggestions];
     } catch (error) {
       console.error('Error fetching suggestions', error);
-      return [];
+      throw error;
     }
   },
 
